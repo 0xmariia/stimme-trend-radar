@@ -122,7 +122,7 @@ function RadarSection() {
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate">{t.name}</p>
                     <p className="text-[11px] text-muted-foreground">
-                      {t.delta} · vol. {Math.floor(800 + Math.random() * 4000)}
+                      {t.delta} · {t.vol.toLocaleString("de-DE")} Erwähnungen
                     </p>
                   </div>
                 </div>
