@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import heroImg from "@/assets/heilbronn-hero.jpg";
 import slide2Img from "@/assets/ig-slide-2.jpg";
 import slide3Img from "@/assets/ig-slide-3.jpg";
@@ -25,47 +25,229 @@ export const Route = createFileRoute("/")({
 });
 
 // ---------- Trend data ----------
-const trendingTopics = [
-  { name: "Wohnraummangel in Heilbronn", delta: "+142%", vol: 4287, spark: [2, 3, 5, 4, 6, 7, 9], hot: true },
-  { name: "Nightlife & Club-Szene", delta: "+88%", vol: 2914, spark: [4, 2, 3, 5, 4, 6, 7] },
-  { name: "Micro-Housing & WG-Modelle", delta: "+64%", vol: 1822, spark: [2, 3, 2, 3, 5, 4, 6] },
-  { name: "Startup Campus HN", delta: "+47%", vol: 1304, spark: [1, 2, 3, 4, 3, 4, 5] },
-  { name: "Mental Health & Therapie", delta: "+38%", vol: 988, spark: [3, 4, 3, 4, 5, 4, 5] },
+// Static "cache" — realistic topics for 20–35 in the Heilbronn region.
+// `readers` = unique readers reached per weekday (this week); `prev` = same, last week.
+const DAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+
+const TOPICS = [
+  {
+    name: "Wohnraummangel & Studi-WGs",
+    category: "Wohnen",
+    heat: "Housing", // maps to the keyword-heatmap tile
+    hot: true,
+    note: "WG-Zimmer ~505 €, BAföG nur 380 € — Heilbronns Studierende unter Druck.",
+    readers: [3200, 4100, 3800, 6200, 7400, 9100, 8600],
+    prev: [1800, 2100, 2400, 2600, 3100, 3600, 3400],
+    audience: { genZ: 64, millennial: 30, other: 6 },
+    sources: [
+      { label: "Reddit r/heilbronn", pct: 72 },
+      { label: "TikTok #hn", pct: 54 },
+      { label: "Instagram", pct: 41 },
+    ],
+  },
+  {
+    name: "KI-Festival 2026 @ IPAI",
+    category: "Event",
+    heat: "Events",
+    hot: true,
+    note: "25.–26. Juli · „READY?!\" — 15.000+ Besucher:innen, Zukunftspark Wohlgelegen.",
+    readers: [2100, 2600, 3400, 4200, 5600, 8800, 7300],
+    prev: [900, 1100, 1500, 1800, 2200, 3100, 2800],
+    audience: { genZ: 48, millennial: 40, other: 12 },
+    sources: [
+      { label: "Instagram", pct: 68 },
+      { label: "TikTok #hn", pct: 61 },
+      { label: "LinkedIn", pct: 47 },
+    ],
+  },
+  {
+    name: "Nightlife & Club-Szene",
+    category: "Kultur",
+    heat: "Music",
+    note: "Wo geht am Wochenende was? Clubs, Open-Airs & Pop-up-Partys.",
+    readers: [1200, 1100, 1400, 2600, 5200, 7800, 3100],
+    prev: [800, 700, 900, 1500, 3000, 4200, 1900],
+    audience: { genZ: 70, millennial: 24, other: 6 },
+    sources: [
+      { label: "Instagram", pct: 79 },
+      { label: "TikTok #hn", pct: 66 },
+      { label: "Reddit r/heilbronn", pct: 22 },
+    ],
+  },
+  {
+    name: "Stadtbahn & Nahverkehr",
+    category: "Mobilität",
+    heat: "Mobility",
+    note: "78 % der Studierenden wollen besseren ÖPNV — Stadtbahn-Ausbau & E-Bikes.",
+    readers: [3100, 3300, 2900, 3000, 3400, 2100, 1800],
+    prev: [2200, 2300, 2100, 2200, 2400, 1500, 1300],
+    audience: { genZ: 42, millennial: 41, other: 17 },
+    sources: [
+      { label: "Reddit r/heilbronn", pct: 58 },
+      { label: "Facebook-Gruppen", pct: 49 },
+      { label: "Instagram", pct: 33 },
+    ],
+  },
+  {
+    name: "Mental Health & Therapieplätze",
+    category: "Gesundheit",
+    heat: "Health",
+    note: "Lange Wartezeiten auf Therapieplätze — großes Thema bei den 20–27-Jährigen.",
+    readers: [1600, 1700, 1800, 1750, 1900, 1500, 2100],
+    prev: [1100, 1150, 1200, 1150, 1250, 1000, 1400],
+    audience: { genZ: 66, millennial: 28, other: 6 },
+    sources: [
+      { label: "TikTok #hn", pct: 64 },
+      { label: "Reddit r/heilbronn", pct: 51 },
+      { label: "Instagram", pct: 38 },
+    ],
+  },
+  {
+    name: "KI-Jobs & Startup Campus",
+    category: "Karriere",
+    heat: "Jobs",
+    note: "Bildungscampus & IPAI ziehen junge Talente — Jobs, Gründungen, Praktika.",
+    readers: [1400, 1500, 1300, 1600, 1450, 800, 700],
+    prev: [1000, 1050, 950, 1100, 1000, 600, 550],
+    audience: { genZ: 38, millennial: 50, other: 12 },
+    sources: [
+      { label: "LinkedIn", pct: 70 },
+      { label: "Reddit r/heilbronn", pct: 48 },
+      { label: "Instagram", pct: 31 },
+    ],
+  },
 ];
 
+// Single source of truth for growth: week-over-week reader change, derived
+// straight from each topic's `readers` vs `prev` arrays (no separate numbers).
+const sum = (a: number[]) => a.reduce((x, y) => x + y, 0);
+const wowPct = (t: { readers: number[]; prev: number[] }) =>
+  Math.round(((sum(t.readers) - sum(t.prev)) / sum(t.prev)) * 100);
+
+// Ordered + valued to match the trending topics: the themes that are trending
+// (Housing, Events/KI, Music/Nightlife, Mobility, Health, Jobs) read "hot".
 const heatmap = [
   { label: "Housing", value: 96 },
-  { label: "Mobility", value: 82 },
-  { label: "Events", value: 41 },
-  { label: "Jobs", value: 58 },
-  { label: "Climate", value: 88 },
-  { label: "Music", value: 64 },
-  { label: "Education", value: 71 },
-  { label: "Food", value: 35 },
-  { label: "AI Local", value: 52 },
+  { label: "AI Local", value: 91 },
+  { label: "Events", value: 88 },
+  { label: "Music", value: 79 },
+  { label: "Mobility", value: 74 },
+  { label: "Health", value: 68 },
+  { label: "Jobs", value: 61 },
+  { label: "Education", value: 57 },
+  { label: "Climate", value: 52 },
+  { label: "Food", value: 34 },
+  { label: "Sport", value: 30 },
   { label: "Politics", value: 28 },
-  { label: "Sport", value: 44 },
-  { label: "Travel", value: 22 },
 ];
 
-const weekBars = [42, 56, 38, 72, 64, 88, 76];
+const STEPS = [
+  { id: "radar", label: "Radar", eyebrow: "Discovery", Section: RadarSection },
+  { id: "analyzer", label: "Analyzer", eyebrow: "Validation", Section: AnalyzerSection },
+  { id: "creator", label: "Creator", eyebrow: "Activation", Section: CreatorSection },
+];
 
 function Index() {
+  const [step, setStep] = useState(0);
+  const ActiveSection = STEPS[step].Section;
+
+  const go = (i: number) => setStep(Math.max(0, Math.min(STEPS.length - 1, i)));
+
+  // Arrow-key / presentation-clicker navigation
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "TEXTAREA" || tag === "INPUT") return; // don't hijack typing
+      if (e.key === "ArrowRight" || e.key === "PageDown") go(step + 1);
+      if (e.key === "ArrowLeft" || e.key === "PageUp") go(step - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [step]);
+
   return (
-    <div className="min-h-screen">
-      <Nav />
-      <main className="max-w-6xl mx-auto px-6 md:px-10 py-16 space-y-32">
-        <RadarSection />
-        <AnalyzerSection />
-        <CreatorSection />
+    <div className="min-h-screen flex flex-col">
+      <Nav step={step} onStep={go} />
+      <main className="flex-1 max-w-6xl w-full mx-auto px-6 md:px-10 py-16">
+        <ActiveSection key={STEPS[step].id} />
       </main>
-      <Footer />
+      <StepControls step={step} onStep={go} />
+      <Footer step={step} onStep={go} />
+    </div>
+  );
+}
+
+// ---------- Step navigation controls ----------
+function StepControls({ step, onStep }: { step: number; onStep: (i: number) => void }) {
+  const isFirst = step === 0;
+  const isLast = step === STEPS.length - 1;
+  return (
+    <div className="sticky bottom-0 z-40 bg-canvas/80 backdrop-blur-xl border-t border-ink/5">
+      <div className="max-w-6xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between gap-4">
+        <button
+          onClick={() => onStep(step - 1)}
+          disabled={isFirst}
+          className="flex items-center gap-2 text-sm font-semibold py-2.5 px-4 rounded-lg ring-1 ring-ink/10 hover:bg-ink/5 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Zurück
+        </button>
+
+        {/* Progress dots */}
+        <div className="flex items-center gap-3">
+          {STEPS.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => onStep(i)}
+              className="group flex items-center gap-2"
+              aria-label={`Schritt ${i + 1}: ${s.label}`}
+            >
+              <span
+                className={`text-[10px] font-mono font-bold transition-colors ${
+                  i === step ? "text-brand" : "text-muted-foreground/50 group-hover:text-muted-foreground"
+                }`}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span
+                className={`h-1 rounded-full transition-all ${
+                  i === step ? "w-10 bg-brand" : "w-4 bg-ink/15 group-hover:bg-ink/30"
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+
+        {isLast ? (
+          <button
+            onClick={() => onStep(0)}
+            className="flex items-center gap-2 text-sm font-semibold py-2.5 px-4 rounded-lg ring-1 ring-ink/10 hover:bg-ink/5 transition-colors"
+          >
+            Von vorn
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006 5.3M4 15a8 8 0 0014 3.7" />
+            </svg>
+          </button>
+        ) : (
+          <button
+            onClick={() => onStep(step + 1)}
+            className="flex items-center gap-2 bg-ink text-canvas text-sm font-semibold py-2.5 px-4 rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Weiter
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+      </div>
     </div>
   );
 }
 
 // ---------- Nav ----------
-function Nav() {
+function Nav({ step, onStep }: { step: number; onStep: (i: number) => void }) {
   return (
     <nav className="sticky top-0 z-50 bg-canvas/80 backdrop-blur-xl border-b border-ink/5">
       <div className="max-w-6xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
@@ -80,10 +262,16 @@ function Nav() {
             </span>
           </div>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-          <a href="#radar" className="hover:text-ink transition-colors">Radar</a>
-          <a href="#analyzer" className="hover:text-ink transition-colors">Analyzer</a>
-          <a href="#creator" className="hover:text-ink transition-colors">Creator</a>
+        <div className="hidden md:flex items-center gap-8 text-sm">
+          {STEPS.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => onStep(i)}
+              className={`transition-colors ${i === step ? "text-ink font-semibold" : "text-muted-foreground hover:text-ink"}`}
+            >
+              {s.label}
+            </button>
+          ))}
         </div>
         <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
           <span className="size-2 rounded-full bg-success" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
@@ -96,110 +284,93 @@ function Nav() {
 
 // ---------- Step 1 ----------
 function RadarSection() {
+  const [selected, setSelected] = useState(0);
+  const topic = TOPICS[selected];
+
   return (
     <section id="radar" className="space-y-10 scroll-mt-24">
       <SectionHeader step="01" eyebrow="Discovery" title="Was die 20–35 Jährigen gerade bewegt." />
 
       <div className="grid grid-cols-12 gap-6">
-        {/* Trending list */}
+        {/* Trending list — click a topic to explore it */}
         <div className="col-span-12 lg:col-span-4 bg-card ring-1 ring-ink/5 rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-4">
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-              Trending Topics · 24h
+              Trending Topics · 7 Tage
             </h3>
-            <span className="text-[10px] font-semibold text-brand">5 hot</span>
+            <span className="text-[10px] font-semibold text-brand">{TOPICS.filter((t) => t.hot).length} hot</span>
           </div>
+          <p className="text-[11px] text-muted-foreground mb-2">
+            Thema wählen → Reichweite rechts ansehen
+          </p>
           <ul className="space-y-1">
-            {trendingTopics.map((t, i) => (
-              <li
-                key={t.name}
-                className="group flex items-center justify-between py-3 border-b last:border-b-0 border-ink/5"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="text-[10px] font-mono text-muted-foreground w-4 shrink-0">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{t.name}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {t.delta} · {t.vol.toLocaleString("de-DE")} Erwähnungen
-                    </p>
-                  </div>
-                </div>
-                <Sparkline values={t.spark} hot={t.hot} />
-              </li>
-            ))}
+            {TOPICS.map((t, i) => {
+              const active = i === selected;
+              return (
+                <li key={t.name}>
+                  <button
+                    onClick={() => setSelected(i)}
+                    className={`group w-full flex items-center justify-between gap-3 rounded-xl px-3 py-3 text-left transition-colors ${
+                      active ? "bg-brand/5 ring-1 ring-brand/20" : "hover:bg-ink/[0.03]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span
+                        className={`text-[10px] font-mono w-4 shrink-0 ${active ? "text-brand font-bold" : "text-muted-foreground"}`}
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium truncate">{t.name}</p>
+                          {t.hot && (
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-brand shrink-0">
+                              hot
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">
+                          <span className="text-success font-semibold">+{wowPct(t)}%</span> ·{" "}
+                          {sum(t.readers).toLocaleString("de-DE")} Leser/Wo.
+                        </p>
+                      </div>
+                    </div>
+                    <Sparkline values={t.readers} hot={active || t.hot} />
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
-        {/* Weekly volume chart */}
+        {/* Interactive trend chart for the selected topic */}
         <div className="col-span-12 lg:col-span-8 bg-card ring-1 ring-ink/5 rounded-2xl p-6">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-                Wochen-Momentum · Erwähnungen Zielgruppe
-              </h3>
-              <p className="text-2xl font-semibold mt-2 tracking-tight">
-                12 482 <span className="text-success text-sm font-medium ml-2">↗ +24.6%</span>
-              </p>
-            </div>
-            <div className="flex gap-2 text-[10px]">
-              <button className="px-3 py-1.5 rounded-md bg-ink text-canvas font-semibold">7T</button>
-              <button className="px-3 py-1.5 rounded-md text-muted-foreground">30T</button>
-              <button className="px-3 py-1.5 rounded-md text-muted-foreground">90T</button>
-            </div>
-          </div>
-
-          <div className="relative h-56">
-            <div className="absolute inset-0 flex flex-col justify-between text-[10px] text-muted-foreground/60">
-              <div className="border-b border-dashed border-ink/5">100</div>
-              <div className="border-b border-dashed border-ink/5">75</div>
-              <div className="border-b border-dashed border-ink/5">50</div>
-              <div className="border-b border-dashed border-ink/5">25</div>
-              <div>0</div>
-            </div>
-            <div className="absolute inset-0 flex items-end gap-3 pt-2 pb-6">
-              {weekBars.map((v, i) => (
-                <div key={i} className="flex-1 h-full flex flex-col justify-end items-center gap-2 group relative">
-                  <div
-                    className="w-full bg-gradient-to-t from-brand to-brand/60 rounded-t-md animate-rise-bar relative"
-                    style={{ height: `${v}%`, animationDelay: `${i * 80}ms` }}
-                  >
-                    <div className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] bg-ink text-canvas px-1.5 py-0.5 rounded">
-                      {v}k
-                    </div>
-                  </div>
-                  <span className="absolute bottom-0 text-[10px] font-medium text-muted-foreground">
-                    {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"][i]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <TopicTrendChart topic={topic} />
         </div>
 
-        {/* Demographics donut */}
+        {/* Who reads this topic — reacts to selection */}
         <div className="col-span-12 md:col-span-6 lg:col-span-4 bg-card ring-1 ring-ink/5 rounded-2xl p-6">
-          <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-4">
-            Audience Split
+          <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-1">
+            Wer liest das?
           </h3>
+          <p className="text-[11px] text-muted-foreground mb-4 truncate">{topic.name}</p>
           <div className="flex items-center gap-6">
-            <Donut />
+            <Donut audience={topic.audience} />
             <ul className="space-y-2 text-xs">
               <li className="flex items-center gap-2">
                 <span className="size-2.5 rounded-sm bg-brand" />
                 <span className="font-semibold">Gen Z (20–27)</span>
-                <span className="text-muted-foreground ml-auto">58%</span>
+                <span className="text-muted-foreground ml-auto">{topic.audience.genZ}%</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="size-2.5 rounded-sm bg-ink" />
                 <span className="font-semibold">Millennial (28–35)</span>
-                <span className="text-muted-foreground ml-auto">34%</span>
+                <span className="text-muted-foreground ml-auto">{topic.audience.millennial}%</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="size-2.5 rounded-sm bg-ink/20" />
-                <span className="font-semibold">Other</span>
-                <span className="text-muted-foreground ml-auto">8%</span>
+                <span className="font-semibold">Andere</span>
+                <span className="text-muted-foreground ml-auto">{topic.audience.other}%</span>
               </li>
             </ul>
           </div>
@@ -217,42 +388,210 @@ function RadarSection() {
             </div>
           </div>
           <div className="grid grid-cols-4 gap-1.5">
-            {heatmap.map((h) => (
-              <div
-                key={h.label}
-                className="aspect-square rounded-md flex flex-col items-start justify-end p-2 transition-transform hover:scale-105"
-                style={{
-                  backgroundColor: `oklch(0.58 0.22 27 / ${0.08 + (h.value / 100) * 0.92})`,
-                }}
-              >
-                <span className={`text-[10px] font-bold uppercase ${h.value > 55 ? "text-canvas" : "text-ink"}`}>
-                  {h.label}
-                </span>
-                <span className={`text-[9px] font-mono ${h.value > 55 ? "text-canvas/70" : "text-ink/50"}`}>
-                  {h.value}
-                </span>
-              </div>
-            ))}
+            {heatmap.map((h) => {
+              const isActive = h.label === topic.heat;
+              return (
+                <div
+                  key={h.label}
+                  className={`aspect-square rounded-md flex flex-col items-start justify-end p-2 transition-transform hover:scale-105 ${
+                    isActive ? "ring-2 ring-ink scale-105" : ""
+                  }`}
+                  style={{
+                    backgroundColor: `oklch(0.58 0.22 27 / ${0.08 + (h.value / 100) * 0.92})`,
+                  }}
+                >
+                  <span className={`text-[10px] font-bold uppercase ${h.value > 55 ? "text-canvas" : "text-ink"}`}>
+                    {h.label}
+                  </span>
+                  <span className={`text-[9px] font-mono ${h.value > 55 ? "text-canvas/70" : "text-ink/50"}`}>
+                    {h.value}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Source breakdown */}
-        <div className="col-span-12 lg:col-span-3 bg-ink text-canvas rounded-2xl p-6 flex flex-col justify-between">
+        {/* Where the interest comes from — reacts to selection */}
+        <div className="col-span-12 lg:col-span-3 bg-ink text-canvas rounded-2xl p-6 flex flex-col justify-between gap-4">
           <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-canvas/50">
-            Top Source
+            Top-Quelle
           </h3>
           <div>
-            <p className="text-3xl font-semibold tracking-tight mt-2">72%</p>
-            <p className="text-sm text-canvas/70 mt-1">aus lokalen Social Communities</p>
+            <p className="text-3xl font-semibold tracking-tight mt-2">{topic.sources[0].pct}%</p>
+            <p className="text-sm text-canvas/70 mt-1">
+              über <span className="text-canvas font-semibold">{topic.sources[0].label}</span>
+            </p>
           </div>
           <div className="space-y-2 text-[11px]">
-            <SourceBar label="Reddit r/heilbronn" pct={72} />
-            <SourceBar label="TikTok #hn" pct={54} />
-            <SourceBar label="Instagram" pct={41} />
+            {topic.sources.map((s) => (
+              <SourceBar key={s.label} label={s.label} pct={s.pct} />
+            ))}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+// ---------- Interactive weekly reader-reach chart ----------
+function TopicTrendChart({ topic }: { topic: (typeof TOPICS)[number] }) {
+  const n = topic.readers.length;
+  const peakIdx = topic.readers.indexOf(Math.max(...topic.readers));
+  const [hover, setHover] = useState<number | null>(null);
+  const active = hover ?? peakIdx;
+
+  const totalThis = sum(topic.readers);
+  const totalPrev = sum(topic.prev);
+  const wow = wowPct(topic); // same source of truth as the trending list
+  const max = Math.max(...topic.readers, ...topic.prev) * 1.18;
+
+  const x = (i: number) => (i / (n - 1)) * 100;
+  const y = (v: number) => 100 - (v / max) * 100;
+  const linePath = (vals: number[]) => vals.map((v, i) => `${i === 0 ? "M" : "L"}${x(i)},${y(v)}`).join(" ");
+  const areaPath = (vals: number[]) => `${linePath(vals)} L100,100 L0,100 Z`;
+
+  const handleMove = (e: MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const rel = (e.clientX - rect.left) / rect.width;
+    setHover(Math.max(0, Math.min(n - 1, Math.round(rel * (n - 1)))));
+  };
+
+  const fmt = (v: number) => v.toLocaleString("de-DE");
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-6 gap-4">
+        <div className="min-w-0">
+          <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+            Leser-Reichweite · {topic.category}
+          </h3>
+          <p className="text-lg font-semibold mt-1 tracking-tight truncate">{topic.name}</p>
+          <p className="text-2xl font-semibold mt-1 tracking-tight">
+            {fmt(totalThis)}
+            <span className="text-muted-foreground text-sm font-medium ml-1">Leser / Woche</span>
+            <span className={`text-sm font-medium ml-2 ${wow >= 0 ? "text-success" : "text-brand"}`}>
+              {wow >= 0 ? "↗" : "↘"} {wow >= 0 ? "+" : ""}{wow}%
+            </span>
+          </p>
+        </div>
+        <div className="flex gap-2 text-[10px] shrink-0">
+          <button className="px-3 py-1.5 rounded-md bg-ink text-canvas font-semibold">7T</button>
+          <button className="px-3 py-1.5 rounded-md text-muted-foreground hover:bg-ink/5 transition-colors">30T</button>
+          <button className="px-3 py-1.5 rounded-md text-muted-foreground hover:bg-ink/5 transition-colors">90T</button>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-5 mb-3 text-[10px] font-medium text-muted-foreground">
+        <span className="flex items-center gap-1.5"><span className="w-3 h-[3px] rounded-full bg-brand" />Diese Woche</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-[2px] rounded-full bg-ink/25" />Vorwoche</span>
+      </div>
+
+      {/* Chart area */}
+      <div
+        className="relative h-52 cursor-crosshair"
+        onMouseMove={handleMove}
+        onMouseLeave={() => setHover(null)}
+      >
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
+        >
+          <defs>
+            <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="oklch(0.58 0.22 27)" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="oklch(0.58 0.22 27)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {/* Gridlines */}
+          {[0, 25, 50, 75, 100].map((g) => (
+            <line
+              key={g}
+              x1="0"
+              x2="100"
+              y1={g}
+              y2={g}
+              stroke="oklch(0.18 0.01 240 / 0.06)"
+              strokeWidth="1"
+              vectorEffect="non-scaling-stroke"
+              strokeDasharray="2 3"
+            />
+          ))}
+          {/* Last week (faint dashed line) */}
+          <path
+            d={linePath(topic.prev)}
+            fill="none"
+            stroke="oklch(0.18 0.01 240 / 0.25)"
+            strokeWidth="1.5"
+            strokeDasharray="3 3"
+            vectorEffect="non-scaling-stroke"
+          />
+          {/* This week (area + line) */}
+          <path d={areaPath(topic.readers)} fill="url(#trendFill)" />
+          <path
+            d={linePath(topic.readers)}
+            fill="none"
+            stroke="oklch(0.58 0.22 27)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+
+        {/* Hover guide + dot + tooltip (HTML overlay, avoids SVG scale distortion) */}
+        <div
+          className="absolute top-0 bottom-0 w-px bg-brand/30 pointer-events-none"
+          style={{ left: `${x(active)}%` }}
+        />
+        <div
+          className="absolute size-3 rounded-full bg-brand ring-2 ring-card shadow pointer-events-none -translate-x-1/2 -translate-y-1/2"
+          style={{ left: `${x(active)}%`, top: `${y(topic.readers[active])}%` }}
+        />
+        <div
+          className="absolute z-10 -translate-x-1/2 -translate-y-full pointer-events-none transition-[left] duration-75"
+          style={{ left: `${Math.min(85, Math.max(15, x(active)))}%`, top: `${y(topic.readers[active])}%`, marginTop: -12 }}
+        >
+          <div className="bg-ink text-canvas rounded-lg px-3 py-2 shadow-lg whitespace-nowrap">
+            <p className="text-[10px] uppercase tracking-wider text-canvas/50">{DAYS[active]}</p>
+            <p className="text-sm font-semibold">{fmt(topic.readers[active])} Leser</p>
+            <p className="text-[10px] text-canvas/60">Vorwoche {fmt(topic.prev[active])}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* X-axis */}
+      <div className="flex justify-between mt-2 text-[10px] font-medium text-muted-foreground">
+        {DAYS.map((d, i) => (
+          <span key={d} className={i === active ? "text-ink font-semibold" : ""}>
+            {d}
+          </span>
+        ))}
+      </div>
+
+      {/* Footer stats + context note */}
+      <div className="grid grid-cols-3 gap-3 mt-6 pt-5 border-t border-ink/5">
+        <Stat label="Peak-Tag" value={`${DAYS[peakIdx]} · ${fmt(topic.readers[peakIdx])}`} />
+        <Stat label="Ø / Tag" value={fmt(Math.round(totalThis / n))} />
+        <Stat label="vs. Vorwoche" value={`${wow >= 0 ? "+" : ""}${wow}%`} accent={wow >= 0} />
+      </div>
+      <div className="mt-4 flex items-start gap-2 text-[11px] text-muted-foreground leading-relaxed">
+        <span className="text-brand mt-px">›</span>
+        <span>{topic.note}</span>
+      </div>
+    </div>
+  );
+}
+
+function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+  return (
+    <div>
+      <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+      <p className={`text-sm font-semibold mt-0.5 tracking-tight ${accent ? "text-success" : "text-ink"}`}>{value}</p>
+    </div>
   );
 }
 
@@ -271,12 +610,13 @@ function Sparkline({ values, hot }: { values: number[]; hot?: boolean }) {
   );
 }
 
-function Donut() {
-  // 58 / 34 / 8 — circumference-based dasharray
+function Donut({ audience }: { audience: { genZ: number; millennial: number; other: number } }) {
+  // circumference-based dasharray — segments driven by the selected topic
   const c = 2 * Math.PI * 36;
-  const seg1 = (58 / 100) * c;
-  const seg2 = (34 / 100) * c;
-  const seg3 = (8 / 100) * c;
+  const seg1 = (audience.genZ / 100) * c;
+  const seg2 = (audience.millennial / 100) * c;
+  const seg3 = (audience.other / 100) * c;
+  const youth = audience.genZ + audience.millennial;
   return (
     <div className="relative size-28 shrink-0">
       <svg viewBox="0 0 100 100" className="size-full -rotate-90">
@@ -285,20 +625,23 @@ function Donut() {
           cx="50" cy="50" r="36" fill="none"
           stroke="oklch(0.58 0.22 27)" strokeWidth="14"
           strokeDasharray={`${seg1} ${c - seg1}`} strokeDashoffset={0}
+          style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1)" }}
         />
         <circle
           cx="50" cy="50" r="36" fill="none"
           stroke="oklch(0.18 0.01 240)" strokeWidth="14"
           strokeDasharray={`${seg2} ${c - seg2}`} strokeDashoffset={-seg1}
+          style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1), stroke-dashoffset 0.6s cubic-bezier(0.19, 1, 0.22, 1)" }}
         />
         <circle
           cx="50" cy="50" r="36" fill="none"
           stroke="oklch(0.18 0.01 240 / 0.2)" strokeWidth="14"
           strokeDasharray={`${seg3} ${c - seg3}`} strokeDashoffset={-(seg1 + seg2)}
+          style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1), stroke-dashoffset 0.6s cubic-bezier(0.19, 1, 0.22, 1)" }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-xl font-semibold tracking-tight">92%</span>
+        <span className="text-xl font-semibold tracking-tight">{youth}%</span>
         <span className="text-[9px] uppercase tracking-wider text-muted-foreground">Youth</span>
       </div>
     </div>
@@ -320,13 +663,36 @@ function SourceBar({ label, pct }: { label: string; pct: number }) {
 }
 
 // ---------- Step 2 ----------
-const DEFAULT_ARTICLE = `Heilbronn plant eine neue Initiative zur Umgestaltung der Innenstadt. Die Fußgängerzone soll durch mehr Grünflächen und moderne Sitzgelegenheiten attraktiver werden. Der Gemeinderat diskutiert derzeit über die Finanzierung des Projekts, das bis 2026 abgeschlossen sein soll. Vor allem jüngere Bürger fordern mehr Platz für Begegnungen und kulturelle Angebote rund um den Kiliansplatz.
+// Cached real-world example: the Heilbronner Lichterfest (18.–20. Juni 2026).
+// Paraphrased from public event info, not copied article text.
+const DEFAULT_ARTICLE = `Heilbronn leuchtet wieder: Das Lichterfest am Neckar ist zurück
 
-Eine Umfrage unter 500 Studierenden der TU Heilbronn ergab, dass 78% sich mehr nachhaltige Verkehrslösungen wünschen — vom Ausbau der Stadtbahn bis zu E-Bike-Stationen.`;
+Drei Abende lang verwandelt sich die Heilbronner Neckarmeile ab heute in eine Festivalmeile. Von Donnerstag, 18., bis Samstag, 20. Juni, feiert die Stadt das Lichterfest am Neckar – jeweils von 18 bis 24 Uhr und bei freiem Eintritt.
+
+Rund um den Hagenbucher See bespielen vier Bühnen das Ufer: 14 Bands und mehrere DJs sorgen von Pop über Indie bis Electro für Stimmung. Höhepunkt an allen drei Abenden ist die große Laser-, Feuer- und Pyroshow, die pünktlich um 22.30 Uhr den Himmel über dem Wasser in Szene setzt.
+
+Zwischen den Bühnen lädt ein Streetfood-Markt zum Schlemmen ein, von Flammkuchen bis Bao Buns. Wer es sportlicher mag, kann den Artist:innen bei der Slackline-Show in rund acht Metern Höhe zusehen oder die eFoil-Vorführungen auf dem Neckar verfolgen. Erstmals werden zudem geführte Kanutouren angeboten.
+
+„Das Lichterfest ist für viele junge Heilbronner:innen der inoffizielle Start in den Sommer", sagt eine Sprecherin der Stadt. Die Veranstalter rechnen erneut mit mehreren Zehntausend Besucher:innen. Wegen der Bauarbeiten an der Neckarmeile wird empfohlen, mit Bus und Bahn anzureisen.`;
+
+// Cached analysis for the example above — the characteristics that matter for 20–35.
+const ANALYSIS = {
+  title: "Lichterfest am Neckar",
+  score: 86,
+  predicted: 8200, // AI-predicted reader reach for this draft
+  bars: [
+    { label: "Youth Appeal", value: 90 },
+    { label: "Topic Match", value: 85 },
+    { label: "Tonalität", value: 68, muted: true },
+    { label: "Freshness", value: 96 },
+  ],
+  tip: 'Ziehe die Laser- & Feuershow (22.30 Uhr) und die eFoil-/Slackline-Action weiter nach oben — diese Erlebnis-Hooks treiben Shares bei 20–35. Ein klarer Anfahrts-/ÖPNV-Hinweis erhöht die Resonanz um <span class="text-canvas font-semibold">+14%</span>.',
+};
 
 function AnalyzerSection() {
   const [article, setArticle] = useState(DEFAULT_ARTICLE);
-  const [analyzed, setAnalyzed] = useState(true);
+  const [analyzed, setAnalyzed] = useState(false);
+  const analysis = ANALYSIS;
 
   return (
     <section id="analyzer" className="space-y-10 scroll-mt-24">
@@ -376,34 +742,160 @@ function AnalyzerSection() {
             </div>
 
             <div className="flex flex-col items-center">
-              <ScoreRing value={analyzed ? 82 : 0} />
+              <ScoreRing value={analysis.score} pending={!analyzed} />
               <p className="mt-4 text-xs text-canvas/60">Gesamt-Relevanz für 20–35</p>
             </div>
 
             <div className="space-y-4">
-              <ScoreBar label="Youth Appeal" value={92} />
-              <ScoreBar label="Topic Match" value={88} />
-              <ScoreBar label="Tonalität" value={71} muted />
-              <ScoreBar label="Freshness" value={64} muted />
+              {analysis.bars.map((b) => (
+                <ScoreBar
+                  key={b.label}
+                  label={b.label}
+                  value={analyzed ? b.value : 0}
+                  muted={!analyzed || b.value < 70}
+                  pending={!analyzed}
+                />
+              ))}
             </div>
 
-            <div className="p-4 rounded-xl bg-canvas/5 border border-canvas/10 space-y-2">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-brand">KI-Tipp</p>
-              <p className="text-xs leading-relaxed text-canvas/80">
-                Erwähne konkrete Orte wie „Kiliansplatz" oder „TU Heilbronn" früher im Text — erhöht lokale
-                Resonanz um <span className="text-canvas font-semibold">+18%</span>.
-              </p>
-            </div>
+            {analyzed ? (
+              <div className="p-4 rounded-xl bg-canvas/5 border border-canvas/10 space-y-2">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-brand">KI-Tipp</p>
+                <p
+                  className="text-xs leading-relaxed text-canvas/80"
+                  dangerouslySetInnerHTML={{ __html: analysis.tip }}
+                />
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-canvas/5 border border-canvas/10 border-dashed">
+                <p className="text-xs leading-relaxed text-canvas/50">
+                  Klicke <span className="text-canvas/80 font-semibold">„Deep-Analyse starten"</span>, um Resonance
+                  Score, Kennzahlen und KI-Tipp zu sehen.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      <PublishedThisWeek
+        draft={analyzed ? { title: analysis.title, score: analysis.score, predicted: analysis.predicted } : null}
+      />
     </section>
   );
 }
 
-function ScoreRing({ value }: { value: number }) {
+// Read-only performance tracker: topics already published, predicted reader
+// reach vs. how many readers they actually attracted — proof the model predicts well.
+const PUBLISHED = [
+  { title: "Wohnungsnot: Der WG-Zimmer-Report", score: 88, predicted: 8700, actual: 9400 },
+  { title: "KI-Festival 2026: Das Programm steht", score: 82, predicted: 7200, actual: 6800 },
+  { title: "Uni-Parkregelung neu geordnet", score: 74, predicted: 1350, actual: 1240 },
+  { title: "Gemeinderat: Haushalt 2026", score: 38, predicted: 360, actual: 410 },
+  { title: "Neuer Stadtbahn-Fahrplan", score: 45, predicted: 320, actual: 280 },
+];
+
+function PublishedThisWeek({
+  draft,
+}: {
+  draft: { title: string; score: number; predicted: number } | null;
+}) {
+  const max = Math.max(
+    ...PUBLISHED.map((p) => Math.max(p.predicted, p.actual)),
+    draft?.predicted ?? 0,
+  );
+  const fmt = (v: number) => v.toLocaleString("de-DE");
+  return (
+    <div className="bg-card ring-1 ring-ink/5 rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-1">
+        <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+          Veröffentlicht diese Woche
+        </h3>
+        <span className="text-[10px] font-semibold text-success">Prognose-Genauigkeit · 91%</span>
+      </div>
+      <p className="text-[11px] text-muted-foreground mb-5 flex items-center gap-3">
+        Resonanz-Score · vorhergesagte → tatsächliche Leser
+        <span className="flex items-center gap-1.5">
+          <span className="w-3 h-[3px] rounded-full bg-brand" />tatsächlich
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-px h-2.5 bg-ink/40" />Prognose
+        </span>
+      </p>
+
+      {/* Forecast row — the just-analysed draft, not yet published */}
+      {draft && (
+        <div className="flex items-center gap-4 p-3 mb-2 rounded-xl bg-brand/[0.07] ring-1 ring-brand/25 animate-rise-bar">
+          <span className="shrink-0 w-9 text-center text-sm font-semibold tabular-nums rounded-md py-1 bg-brand text-brand-foreground">
+            {draft.score}
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold truncate">{draft.title}</p>
+              <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-brand bg-brand/15 px-1.5 py-0.5 rounded">
+                Entwurf · Prognose
+              </span>
+            </div>
+            <div className="relative mt-1.5 h-1.5 bg-brand/10 rounded-full">
+              <div
+                className="absolute inset-y-0 left-0 bg-brand rounded-full animate-draw-bar"
+                style={{ width: `${(draft.predicted / max) * 100}%` }}
+              />
+            </div>
+          </div>
+          <span className="shrink-0 text-right tabular-nums">
+            <span className="text-sm font-semibold text-brand">~{fmt(draft.predicted)}</span>
+            <span className="text-[11px] text-muted-foreground"> Leser erwartet</span>
+          </span>
+        </div>
+      )}
+
+      <ul className="space-y-1">
+        {PUBLISHED.map((p) => {
+          const high = p.score >= 70;
+          const beat = p.actual >= p.predicted;
+          return (
+            <li key={p.title} className="flex items-center gap-4 py-3 border-b last:border-b-0 border-ink/5">
+              <span
+                className={`shrink-0 w-9 text-center text-sm font-semibold tabular-nums rounded-md py-1 ${
+                  high ? "bg-brand/10 text-brand" : "bg-ink/[0.04] text-muted-foreground"
+                }`}
+              >
+                {p.score}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium truncate">{p.title}</p>
+                <div className="relative mt-1.5 h-1.5 bg-ink/[0.06] rounded-full">
+                  <div
+                    className="absolute inset-y-0 left-0 bg-brand/70 rounded-full animate-draw-bar"
+                    style={{ width: `${(p.actual / max) * 100}%` }}
+                  />
+                  {/* predicted marker */}
+                  <div
+                    className="absolute -top-0.5 -bottom-0.5 w-px bg-ink/50"
+                    style={{ left: `${(p.predicted / max) * 100}%` }}
+                  />
+                </div>
+              </div>
+              <span className="shrink-0 text-right tabular-nums">
+                <span className="text-[11px] text-muted-foreground">{fmt(p.predicted)} → </span>
+                <span className="text-sm font-semibold">{fmt(p.actual)}</span>
+                <span className={`ml-1.5 text-[11px] font-semibold ${beat ? "text-success" : "text-muted-foreground"}`}>
+                  {beat ? "↗" : "↘"}
+                </span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+function ScoreRing({ value, pending }: { value: number; pending?: boolean }) {
   const c = 2 * Math.PI * 42;
-  const offset = c - (value / 100) * c;
+  const shown = pending ? 0 : value;
+  const offset = c - (shown / 100) * c;
   return (
     <div className="relative size-36">
       <svg viewBox="0 0 100 100" className="size-full -rotate-90">
@@ -417,19 +909,21 @@ function ScoreRing({ value }: { value: number }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-5xl font-semibold tracking-tighter animate-count-up">{value}</span>
+        <span className="text-5xl font-semibold tracking-tighter animate-count-up">
+          {pending ? "–" : value}
+        </span>
         <span className="text-[10px] uppercase tracking-widest text-canvas/40">/ 100</span>
       </div>
     </div>
   );
 }
 
-function ScoreBar({ label, value, muted }: { label: string; value: number; muted?: boolean }) {
+function ScoreBar({ label, value, muted, pending }: { label: string; value: number; muted?: boolean; pending?: boolean }) {
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between text-[10px] font-semibold uppercase tracking-wider">
         <span className="text-canvas/70">{label}</span>
-        <span className={muted ? "text-canvas/80" : "text-brand"}>{value}%</span>
+        <span className={muted ? "text-canvas/80" : "text-brand"}>{pending ? "–" : `${value}%`}</span>
       </div>
       <div className="h-1 bg-canvas/10 rounded-full overflow-hidden">
         <div
@@ -798,9 +1292,9 @@ function SectionHeader({ step, eyebrow, title }: { step: string; eyebrow: string
   );
 }
 
-function Footer() {
+function Footer({ step, onStep }: { step: number; onStep: (i: number) => void }) {
   return (
-    <footer className="border-t border-ink/5 mt-24">
+    <footer className="border-t border-ink/5">
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-3">
           <div className="size-7 bg-brand rounded-md flex items-center justify-center text-brand-foreground font-black text-sm">
@@ -811,9 +1305,15 @@ function Footer() {
           </p>
         </div>
         <div className="flex gap-6 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-          <a href="#radar">Radar</a>
-          <a href="#analyzer">Analyzer</a>
-          <a href="#creator">Creator</a>
+          {STEPS.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => onStep(i)}
+              className={`transition-colors hover:text-ink ${i === step ? "text-ink" : ""}`}
+            >
+              {s.label}
+            </button>
+          ))}
         </div>
       </div>
     </footer>
