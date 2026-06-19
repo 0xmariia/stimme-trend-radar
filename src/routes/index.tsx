@@ -397,7 +397,7 @@ function RadarSection() {
                     isActive ? "ring-2 ring-ink scale-105" : ""
                   }`}
                   style={{
-                    backgroundColor: `oklch(0.58 0.22 27 / ${0.08 + (h.value / 100) * 0.92})`,
+                    backgroundColor: `oklch(0.58 0.22 255 / ${0.08 + (h.value / 100) * 0.92})`,
                   }}
                 >
                   <span className={`text-[10px] font-bold uppercase ${h.value > 55 ? "text-canvas" : "text-ink"}`}>
@@ -502,8 +502,8 @@ function TopicTrendChart({ topic }: { topic: (typeof TOPICS)[number] }) {
         >
           <defs>
             <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="oklch(0.58 0.22 27)" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="oklch(0.58 0.22 27)" stopOpacity="0" />
+              <stop offset="0%" stopColor="oklch(0.58 0.22 255)" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="oklch(0.58 0.22 255)" stopOpacity="0" />
             </linearGradient>
           </defs>
           {/* Gridlines */}
@@ -534,7 +534,7 @@ function TopicTrendChart({ topic }: { topic: (typeof TOPICS)[number] }) {
           <path
             d={linePath(topic.readers)}
             fill="none"
-            stroke="oklch(0.58 0.22 27)"
+            stroke="oklch(0.58 0.22 255)"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -623,7 +623,7 @@ function Donut({ audience }: { audience: { genZ: number; millennial: number; oth
         <circle cx="50" cy="50" r="36" fill="none" stroke="oklch(0.92 0.004 240)" strokeWidth="14" />
         <circle
           cx="50" cy="50" r="36" fill="none"
-          stroke="oklch(0.58 0.22 27)" strokeWidth="14"
+          stroke="oklch(0.58 0.22 255)" strokeWidth="14"
           strokeDasharray={`${seg1} ${c - seg1}`} strokeDashoffset={0}
           style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1)" }}
         />
@@ -915,7 +915,7 @@ function ScoreRing({ value, pending }: { value: number; pending?: boolean }) {
         <circle cx="50" cy="50" r="42" fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="6" />
         <circle
           cx="50" cy="50" r="42" fill="none"
-          stroke="oklch(0.58 0.22 27)" strokeWidth="6"
+          stroke="oklch(0.58 0.22 255)" strokeWidth="6"
           strokeDasharray={c} strokeDashoffset={offset}
           strokeLinecap="round"
           style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.19, 1, 0.22, 1)" }}
@@ -1087,35 +1087,30 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
             </div>
           </div>
 
-          {/* IG header */}
-          <header className="h-12 flex items-center px-3.5 border-b border-black/5">
-            <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.2" className="size-6">
+          {/* IG top bar */}
+          <header className="relative h-14 flex items-center justify-center border-b border-black/5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.2" className="size-6 absolute left-3.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            <div className="flex-1 flex flex-col items-start ml-2 leading-tight">
-              <span className="text-[10px] text-black/50 font-medium">Beitrag</span>
-              <span className="text-[14px] font-semibold text-black">Heilbronner Stimme</span>
+            <div className="flex flex-col items-center leading-tight">
+              <span className="text-[15px] font-bold text-black">Posts</span>
+              <span className="text-[11px] text-black/60">stimmeonline</span>
             </div>
+            <button className="absolute right-3.5 text-[12px] font-semibold text-white bg-[#0095f6] px-3.5 py-1.5 rounded-lg">
+              Follow
+            </button>
           </header>
 
           {/* Post header */}
           <div className="flex items-center gap-2.5 px-3.5 py-2.5">
             <div className="size-9 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600">
               <div className="size-full rounded-full bg-white p-[2px]">
-                <div className="size-full rounded-full bg-brand flex items-center justify-center text-white text-[11px] font-black">
-                  S
+                <div className="size-full rounded-full bg-brand flex items-center justify-center text-white text-[6px] font-serif font-bold tracking-tight leading-none">
+                  STIMME
                 </div>
               </div>
             </div>
-            <div className="flex-1 leading-tight">
-              <div className="flex items-center gap-1">
-                <span className="text-[13px] font-semibold text-black">heilbronner_stimme</span>
-                <svg viewBox="0 0 24 24" className="size-3.5" fill="#3897f0">
-                  <path d="M12 2l2.4 2.4 3.4-.4 1 3.2 3.2 1-.4 3.4L24 14l-2.4 2.4.4 3.4-3.2 1-1 3.2-3.4-.4L12 26l-2.4-2.4-3.4.4-1-3.2-3.2-1 .4-3.4L0 14l2.4-2.4-.4-3.4 3.2-1 1-3.2 3.4.4L12 2zm-1.5 14.5l7-7-1.4-1.4-5.6 5.6-2.6-2.6L6.5 12.5l4 4z" />
-                </svg>
-              </div>
-              <span className="text-[11px] text-black/60">Heilbronn, Deutschland</span>
-            </div>
+            <span className="flex-1 text-[13px] font-semibold text-black">stimmeonline</span>
             <span className="text-lg leading-none text-black font-bold tracking-tighter">···</span>
           </div>
 
@@ -1152,49 +1147,54 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
               </div>
             </div>
 
-            {/* Slide dots overlay (carousel indicator at top) */}
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 flex gap-1">
-              {slides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  className={`h-1 rounded-full transition-all ${
-                    active === i ? "w-6 bg-white" : "w-1 bg-white/50"
-                  }`}
-                />
-              ))}
-            </div>
+          </div>
+
+          {/* Carousel dots */}
+          <div className="flex justify-center gap-1.5 py-2.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className={`size-1.5 rounded-full transition-all ${
+                  active === i ? "bg-[#0095f6]" : "bg-black/20"
+                }`}
+              />
+            ))}
           </div>
 
           {/* Action row */}
-          <div className="px-3.5 pt-3 pb-2 flex items-center justify-between">
-            <div className="flex gap-3.5 text-black">
+          <div className="px-3 pb-1.5 flex items-center text-black">
+            <button className="flex items-center gap-1.5">
               <HeartIcon />
+              <span className="text-[13px] font-semibold">191</span>
+            </button>
+            <button className="flex items-center gap-1.5 ml-4">
               <CommentIcon />
+              <span className="text-[13px] font-semibold">8</span>
+            </button>
+            <button className="flex items-center gap-1.5 ml-4">
+              <RepostIcon />
+              <span className="text-[13px] font-semibold">1</span>
+            </button>
+            <button className="ml-4">
               <ShareIcon />
-            </div>
-            <div className="flex gap-1 items-center">
-              {slides.map((_, i) => (
-                <div
-                  key={i}
-                  className={`rounded-full transition-all ${
-                    active === i ? "size-1.5 bg-brand" : "size-1 bg-black/20"
-                  }`}
-                />
-              ))}
-            </div>
-            <BookmarkIcon />
+            </button>
+            <button className="ml-auto">
+              <BookmarkIcon />
+            </button>
           </div>
 
-          {/* Likes + caption */}
+          {/* Caption */}
           <div className="px-3.5 space-y-1 pb-3">
-            <p className="text-[12px] font-semibold text-black">2 481 „Gefällt mir"-Angaben</p>
             <p className="text-[12px] leading-snug text-black">
-              <span className="font-semibold">heilbronner_stimme</span> Neue Pläne für unser Zentrum 🌳 Mehr Grün,
+              <span className="font-semibold">stimmeonline</span> Neue Pläne für unser Zentrum 🌳 Mehr Grün,
               weniger Beton — und ihr habt ein… <span className="text-black/50">mehr</span>
             </p>
-            <p className="text-[11px] text-black/40">Alle 142 Kommentare ansehen</p>
-            <p className="text-[10px] text-black/40 uppercase tracking-wider pt-1">Vor 2 Stunden</p>
+            <p className="text-[12px] leading-snug text-[#0095f6]">
+              #Heilbronn #Stadtentwicklung #GenZ #StimmeRadar
+            </p>
+            <p className="text-[11px] text-black/40">Alle 8 Kommentare ansehen</p>
+            <p className="text-[11px] text-black/40 pt-0.5">Vor 2 Stunden</p>
           </div>
 
           {/* Bottom tab bar */}
@@ -1204,7 +1204,11 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
             <TabIcon kind="plus" />
             <TabIcon kind="reels" />
             <div className="flex justify-center">
-              <div className="size-6 rounded-full bg-brand" />
+              <div className="size-6 rounded-full bg-brand ring-1 ring-black flex items-center justify-center">
+                <span className="text-white text-[4px] font-serif font-bold tracking-tight leading-none">
+                  STIMME
+                </span>
+              </div>
             </div>
           </div>
           {/* Home indicator */}
@@ -1218,28 +1222,35 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
 // ---------- IG / phone icons ----------
 function HeartIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-7">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+    </svg>
+  );
+}
+function RepostIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-6">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3" />
     </svg>
   );
 }
 function CommentIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-7">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
     </svg>
   );
 }
 function ShareIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-7">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
     </svg>
   );
 }
 function BookmarkIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.8" className="size-7">
+    <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.8" className="size-6">
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
     </svg>
   );
