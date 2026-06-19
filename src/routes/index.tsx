@@ -1113,21 +1113,24 @@ function CarouselArtwork({
     const photoSlides = [
       {
         label: "Lichterfest 2026",
-        headline: "LICHT AN.\nHEILBRONN.",
+        headline: "Licht an,\nHeilbronn.",
         sub: "18.–20. Juni · Neckarmeile · Eintritt frei",
         position: "center 54%",
+        overlay: "linear-gradient(180deg,rgba(8,15,38,.04) 0%,rgba(8,15,38,.32) 44%,rgba(8,15,38,.97) 100%)",
       },
       {
         label: "Jeden Abend",
-        headline: "22:30\nWIRD'S HELL.",
+        headline: "22:30 —\ndie Show\nbeginnt.",
         sub: "Feuer-, Licht- und Pyroshows auf vier Bühnen.",
-        position: "42% center",
+        position: "68% 36%",
+        overlay: "linear-gradient(180deg,rgba(55,18,4,.04) 0%,rgba(40,12,4,.38) 44%,rgba(18,5,2,.97) 100%)",
       },
       {
         label: "Dein Plan",
-        headline: "14 BANDS.\n60 FOOD-SPOTS.\n0 €.",
-        sub: "Täglich 18–24 Uhr. Speichern, weiterschicken, losziehen.",
-        position: "72% center",
+        headline: "0 €.\n14 Bands.\nNeckarmeile.",
+        sub: "Täglich 18–24 Uhr. Speichern & losziehen.",
+        position: "38% 68%",
+        overlay: "linear-gradient(180deg,rgba(4,10,48,.06) 0%,rgba(4,10,48,.4) 44%,rgba(4,10,48,.97) 100%)",
       },
     ];
     const slide = photoSlides[active];
@@ -1140,7 +1143,7 @@ function CarouselArtwork({
           className="absolute inset-0 size-full object-cover scale-[1.08]"
           style={{ objectPosition: slide.position }}
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,38,.08)_10%,rgba(8,15,38,.38)_48%,rgba(8,15,38,.96)_100%)]" />
+        <div className="absolute inset-0" style={{ background: slide.overlay }} />
         <div
           className={`absolute inset-0 flex flex-col justify-between ${compact ? "p-2.5" : "p-6"}`}
         >
@@ -1156,7 +1159,7 @@ function CarouselArtwork({
           </div>
           <div>
             <h4
-              className={`${compact ? "text-[15px]" : active === 2 ? "text-[34px]" : "text-[43px]"} font-black leading-[0.88] tracking-[-0.055em] whitespace-pre-line`}
+              className={`${compact ? "text-[11px]" : "text-[26px]"} font-black leading-[0.92] tracking-[-0.04em] whitespace-pre-line`}
             >
               {slide.headline}
             </h4>
@@ -1201,11 +1204,36 @@ function CarouselArtwork({
             </div>
             <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono`}>01 / 03</span>
           </div>
-          <img
-            src={lichterfestIllustration}
-            alt="Illustrative Collage mit Heilbronner Skyline, Lichtern, Musik und Streetfood"
-            className={`${compact ? "mt-0" : "-mt-1"} w-full flex-1 object-contain drop-shadow-[0_12px_16px_rgba(11,36,84,.14)]`}
-          />
+          <div className="flex-1 relative flex items-center justify-center overflow-hidden">
+            {/* Large decorative circle outline */}
+            <div
+              className={`absolute rounded-full ${compact ? "-right-6 -bottom-4 size-20 border-[5px]" : "-right-16 -bottom-10 size-56 border-[14px]"}`}
+              style={{ borderColor: "rgba(11,36,84,0.09)" }}
+            />
+            {/* Small accent dot */}
+            <div
+              className={`absolute rounded-full bg-[#ffc64a] ${compact ? "left-2 bottom-2 size-3" : "left-5 bottom-6 size-9"}`}
+              style={{ opacity: 0.65 }}
+            />
+            {/* Typographic poster — the headline IS the visual */}
+            <div className={compact ? "-mt-1" : "-mt-3"}>
+              <p
+                className={`font-black leading-[0.78] tracking-[-0.06em] ${compact ? "text-[28px]" : "text-[72px]"}`}
+              >
+                LICHT
+              </p>
+              <p
+                className={`font-black leading-[0.78] tracking-[-0.06em] text-[#ff5a46] ${compact ? "text-[28px]" : "text-[72px]"}`}
+              >
+                FEST
+              </p>
+              {!compact && (
+                <p className="mt-4 text-[10px] font-bold tracking-[0.18em] opacity-30">
+                  HEILBRONN · NECKAR · 2026
+                </p>
+              )}
+            </div>
+          </div>
           {!compact && (
             <p className="text-[11px] font-semibold">Lichterfest · 18.–20. Juni · Eintritt frei</p>
           )}
