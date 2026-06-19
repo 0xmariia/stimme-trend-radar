@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type MouseEvent } from "react";
-import heroImg from "@/assets/heilbronn-hero.jpg";
-import slide2Img from "@/assets/ig-slide-2.jpg";
-import slide3Img from "@/assets/ig-slide-3.jpg";
+import lichterfestPhoto from "@/assets/lichterfest-night.jpg";
+import lichterfestIllustration from "@/assets/lichterfest-illustration.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,7 +49,7 @@ const TOPICS = [
     category: "Event",
     heat: "Events",
     hot: true,
-    note: "25.–26. Juli · „READY?!\" — 15.000+ Besucher:innen, Zukunftspark Wohlgelegen.",
+    note: '25.–26. Juli · „READY?!" — 15.000+ Besucher:innen, Zukunftspark Wohlgelegen.',
     readers: [2100, 2600, 3400, 4200, 5600, 8800, 7300],
     prev: [900, 1100, 1500, 1800, 2200, 3100, 2800],
     audience: { genZ: 48, millennial: 40, other: 12 },
@@ -189,7 +188,13 @@ function StepControls({ step, onStep }: { step: number; onStep: (i: number) => v
           disabled={isFirst}
           className="flex items-center gap-2 text-sm font-semibold py-2.5 px-4 rounded-lg ring-1 ring-ink/10 hover:bg-ink/5 transition-colors disabled:opacity-30 disabled:pointer-events-none"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            className="size-4"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
           Zurück
@@ -206,7 +211,9 @@ function StepControls({ step, onStep }: { step: number; onStep: (i: number) => v
             >
               <span
                 className={`text-[10px] font-mono font-bold transition-colors ${
-                  i === step ? "text-brand" : "text-muted-foreground/50 group-hover:text-muted-foreground"
+                  i === step
+                    ? "text-brand"
+                    : "text-muted-foreground/50 group-hover:text-muted-foreground"
                 }`}
               >
                 {String(i + 1).padStart(2, "0")}
@@ -226,8 +233,18 @@ function StepControls({ step, onStep }: { step: number; onStep: (i: number) => v
             className="flex items-center gap-2 text-sm font-semibold py-2.5 px-4 rounded-lg ring-1 ring-ink/10 hover:bg-ink/5 transition-colors"
           >
             Von vorn
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006 5.3M4 15a8 8 0 0014 3.7" />
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="size-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 006 5.3M4 15a8 8 0 0014 3.7"
+              />
             </svg>
           </button>
         ) : (
@@ -236,7 +253,13 @@ function StepControls({ step, onStep }: { step: number; onStep: (i: number) => v
             className="flex items-center gap-2 bg-ink text-canvas text-sm font-semibold py-2.5 px-4 rounded-lg hover:opacity-90 transition-opacity"
           >
             Weiter
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              className="size-4"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 5l7 7-7 7" />
             </svg>
           </button>
@@ -274,7 +297,10 @@ function Nav({ step, onStep }: { step: number; onStep: (i: number) => void }) {
           ))}
         </div>
         <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-          <span className="size-2 rounded-full bg-success" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
+          <span
+            className="size-2 rounded-full bg-success"
+            style={{ animation: "pulse-dot 2s ease-in-out infinite" }}
+          />
           Live · 14:42 MEZ
         </div>
       </div>
@@ -298,7 +324,9 @@ function RadarSection() {
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
               Trending Topics · 7 Tage
             </h3>
-            <span className="text-[10px] font-semibold text-brand">{TOPICS.filter((t) => t.hot).length} hot</span>
+            <span className="text-[10px] font-semibold text-brand">
+              {TOPICS.filter((t) => t.hot).length} hot
+            </span>
           </div>
           <p className="text-[11px] text-muted-foreground mb-2">
             Thema wählen → Reichweite rechts ansehen
@@ -383,8 +411,14 @@ function RadarSection() {
               Keyword Heatmap · Gen-Z Interest
             </h3>
             <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-              <span className="flex items-center gap-1"><span className="size-2 rounded-sm bg-brand/15" />low</span>
-              <span className="flex items-center gap-1"><span className="size-2 rounded-sm bg-brand" />high</span>
+              <span className="flex items-center gap-1">
+                <span className="size-2 rounded-sm bg-brand/15" />
+                low
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="size-2 rounded-sm bg-brand" />
+                high
+              </span>
             </div>
           </div>
           <div className="grid grid-cols-4 gap-1.5">
@@ -400,10 +434,14 @@ function RadarSection() {
                     backgroundColor: `oklch(0.58 0.22 255 / ${0.08 + (h.value / 100) * 0.92})`,
                   }}
                 >
-                  <span className={`text-[10px] font-bold uppercase ${h.value > 55 ? "text-canvas" : "text-ink"}`}>
+                  <span
+                    className={`text-[10px] font-bold uppercase ${h.value > 55 ? "text-canvas" : "text-ink"}`}
+                  >
                     {h.label}
                   </span>
-                  <span className={`text-[9px] font-mono ${h.value > 55 ? "text-canvas/70" : "text-ink/50"}`}>
+                  <span
+                    className={`text-[9px] font-mono ${h.value > 55 ? "text-canvas/70" : "text-ink/50"}`}
+                  >
                     {h.value}
                   </span>
                 </div>
@@ -448,7 +486,8 @@ function TopicTrendChart({ topic }: { topic: (typeof TOPICS)[number] }) {
 
   const x = (i: number) => (i / (n - 1)) * 100;
   const y = (v: number) => 100 - (v / max) * 100;
-  const linePath = (vals: number[]) => vals.map((v, i) => `${i === 0 ? "M" : "L"}${x(i)},${y(v)}`).join(" ");
+  const linePath = (vals: number[]) =>
+    vals.map((v, i) => `${i === 0 ? "M" : "L"}${x(i)},${y(v)}`).join(" ");
   const areaPath = (vals: number[]) => `${linePath(vals)} L100,100 L0,100 Z`;
 
   const handleMove = (e: MouseEvent<HTMLDivElement>) => {
@@ -471,22 +510,35 @@ function TopicTrendChart({ topic }: { topic: (typeof TOPICS)[number] }) {
           <p className="text-2xl font-semibold mt-1 tracking-tight">
             {fmt(totalThis)}
             <span className="text-muted-foreground text-sm font-medium ml-1">Leser / Woche</span>
-            <span className={`text-sm font-medium ml-2 ${wow >= 0 ? "text-success" : "text-brand"}`}>
-              {wow >= 0 ? "↗" : "↘"} {wow >= 0 ? "+" : ""}{wow}%
+            <span
+              className={`text-sm font-medium ml-2 ${wow >= 0 ? "text-success" : "text-brand"}`}
+            >
+              {wow >= 0 ? "↗" : "↘"} {wow >= 0 ? "+" : ""}
+              {wow}%
             </span>
           </p>
         </div>
         <div className="flex gap-2 text-[10px] shrink-0">
           <button className="px-3 py-1.5 rounded-md bg-ink text-canvas font-semibold">7T</button>
-          <button className="px-3 py-1.5 rounded-md text-muted-foreground hover:bg-ink/5 transition-colors">30T</button>
-          <button className="px-3 py-1.5 rounded-md text-muted-foreground hover:bg-ink/5 transition-colors">90T</button>
+          <button className="px-3 py-1.5 rounded-md text-muted-foreground hover:bg-ink/5 transition-colors">
+            30T
+          </button>
+          <button className="px-3 py-1.5 rounded-md text-muted-foreground hover:bg-ink/5 transition-colors">
+            90T
+          </button>
         </div>
       </div>
 
       {/* Legend */}
       <div className="flex items-center gap-5 mb-3 text-[10px] font-medium text-muted-foreground">
-        <span className="flex items-center gap-1.5"><span className="w-3 h-[3px] rounded-full bg-brand" />Diese Woche</span>
-        <span className="flex items-center gap-1.5"><span className="w-3 h-[2px] rounded-full bg-ink/25" />Vorwoche</span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-3 h-[3px] rounded-full bg-brand" />
+          Diese Woche
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-3 h-[2px] rounded-full bg-ink/25" />
+          Vorwoche
+        </span>
       </div>
 
       {/* Chart area */}
@@ -553,7 +605,11 @@ function TopicTrendChart({ topic }: { topic: (typeof TOPICS)[number] }) {
         />
         <div
           className="absolute z-10 -translate-x-1/2 -translate-y-full pointer-events-none transition-[left] duration-75"
-          style={{ left: `${Math.min(85, Math.max(15, x(active)))}%`, top: `${y(topic.readers[active])}%`, marginTop: -12 }}
+          style={{
+            left: `${Math.min(85, Math.max(15, x(active)))}%`,
+            top: `${y(topic.readers[active])}%`,
+            marginTop: -12,
+          }}
         >
           <div className="bg-ink text-canvas rounded-lg px-3 py-2 shadow-lg whitespace-nowrap">
             <p className="text-[10px] uppercase tracking-wider text-canvas/50">{DAYS[active]}</p>
@@ -589,8 +645,14 @@ function TopicTrendChart({ topic }: { topic: (typeof TOPICS)[number] }) {
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div>
-      <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className={`text-sm font-semibold mt-0.5 tracking-tight ${accent ? "text-success" : "text-ink"}`}>{value}</p>
+      <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </p>
+      <p
+        className={`text-sm font-semibold mt-0.5 tracking-tight ${accent ? "text-success" : "text-ink"}`}
+      >
+        {value}
+      </p>
     </div>
   );
 }
@@ -620,24 +682,52 @@ function Donut({ audience }: { audience: { genZ: number; millennial: number; oth
   return (
     <div className="relative size-28 shrink-0">
       <svg viewBox="0 0 100 100" className="size-full -rotate-90">
-        <circle cx="50" cy="50" r="36" fill="none" stroke="oklch(0.92 0.004 240)" strokeWidth="14" />
         <circle
-          cx="50" cy="50" r="36" fill="none"
-          stroke="oklch(0.58 0.22 255)" strokeWidth="14"
-          strokeDasharray={`${seg1} ${c - seg1}`} strokeDashoffset={0}
+          cx="50"
+          cy="50"
+          r="36"
+          fill="none"
+          stroke="oklch(0.92 0.004 240)"
+          strokeWidth="14"
+        />
+        <circle
+          cx="50"
+          cy="50"
+          r="36"
+          fill="none"
+          stroke="oklch(0.58 0.22 255)"
+          strokeWidth="14"
+          strokeDasharray={`${seg1} ${c - seg1}`}
+          strokeDashoffset={0}
           style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1)" }}
         />
         <circle
-          cx="50" cy="50" r="36" fill="none"
-          stroke="oklch(0.18 0.01 240)" strokeWidth="14"
-          strokeDasharray={`${seg2} ${c - seg2}`} strokeDashoffset={-seg1}
-          style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1), stroke-dashoffset 0.6s cubic-bezier(0.19, 1, 0.22, 1)" }}
+          cx="50"
+          cy="50"
+          r="36"
+          fill="none"
+          stroke="oklch(0.18 0.01 240)"
+          strokeWidth="14"
+          strokeDasharray={`${seg2} ${c - seg2}`}
+          strokeDashoffset={-seg1}
+          style={{
+            transition:
+              "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1), stroke-dashoffset 0.6s cubic-bezier(0.19, 1, 0.22, 1)",
+          }}
         />
         <circle
-          cx="50" cy="50" r="36" fill="none"
-          stroke="oklch(0.18 0.01 240 / 0.2)" strokeWidth="14"
-          strokeDasharray={`${seg3} ${c - seg3}`} strokeDashoffset={-(seg1 + seg2)}
-          style={{ transition: "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1), stroke-dashoffset 0.6s cubic-bezier(0.19, 1, 0.22, 1)" }}
+          cx="50"
+          cy="50"
+          r="36"
+          fill="none"
+          stroke="oklch(0.18 0.01 240 / 0.2)"
+          strokeWidth="14"
+          strokeDasharray={`${seg3} ${c - seg3}`}
+          strokeDashoffset={-(seg1 + seg2)}
+          style={{
+            transition:
+              "stroke-dasharray 0.6s cubic-bezier(0.19, 1, 0.22, 1), stroke-dashoffset 0.6s cubic-bezier(0.19, 1, 0.22, 1)",
+          }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -665,15 +755,17 @@ function SourceBar({ label, pct }: { label: string; pct: number }) {
 // ---------- Step 2 ----------
 // Cached real-world example: the Heilbronner Lichterfest (18.–20. Juni 2026).
 // Paraphrased from public event info, not copied article text.
-const DEFAULT_ARTICLE = `Heilbronn leuchtet wieder: Das Lichterfest am Neckar ist zurück
+const DEFAULT_ARTICLE = `Heilbronn leuchtet: Das Lichterfest am Neckar ist zurück
 
-Drei Abende lang verwandelt sich die Heilbronner Neckarmeile ab heute in eine Festivalmeile. Von Donnerstag, 18., bis Samstag, 20. Juni, feiert die Stadt das Lichterfest am Neckar – jeweils von 18 bis 24 Uhr und bei freiem Eintritt.
+Von Donnerstag, 18., bis Samstag, 20. Juni verwandelt sich die Heilbronner Neckarmeile in eine Flanier- und Erlebnismeile. Das Programm läuft täglich von 18 bis 24 Uhr, der Eintritt ist frei.
 
-Rund um den Hagenbucher See bespielen vier Bühnen das Ufer: 14 Bands und mehrere DJs sorgen von Pop über Indie bis Electro für Stimmung. Höhepunkt an allen drei Abenden ist die große Laser-, Feuer- und Pyroshow, die pünktlich um 22.30 Uhr den Himmel über dem Wasser in Szene setzt.
+Rund um den Hagenbucher See, am Bollwerksturm und an der Götzenturmbrücke sorgen Lichtinstallationen, LED-Figuren und Walking Acts für Atmosphäre. Höhepunkt an allen drei Abenden sind die Feuer-, Licht- und Pyroshows auf vier Bühnen. Sie beginnen jeweils gegen 22.30 Uhr.
 
-Zwischen den Bühnen lädt ein Streetfood-Markt zum Schlemmen ein, von Flammkuchen bis Bao Buns. Wer es sportlicher mag, kann den Artist:innen bei der Slackline-Show in rund acht Metern Höhe zusehen oder die eFoil-Vorführungen auf dem Neckar verfolgen. Erstmals werden zudem geführte Kanutouren angeboten.
+Musikalisch stehen 14 Bands und mehrere DJs auf dem Programm. Zu den Partyspots gehören die Radio Ton Riverstage, die VR-Bank-Bühne, das Theaterschiff und die Neckartreppe. Rund 60 Stände bieten Streetfood, internationale Spezialitäten und Getränke an.
 
-„Das Lichterfest ist für viele junge Heilbronner:innen der inoffizielle Start in den Sommer", sagt eine Sprecherin der Stadt. Die Veranstalter rechnen erneut mit mehreren Zehntausend Besucher:innen. Wegen der Bauarbeiten an der Neckarmeile wird empfohlen, mit Bus und Bahn anzureisen.`;
+Am Samstag startet das Familienprogramm bereits um 12 Uhr mit Drachenbootcup, Charity-Entenrennen und Kinderdisco. Ab 13 Uhr ist der Eintritt in die experimenta für Kinder und Jugendliche bis 18 Jahre kostenlos, abhängig von der Auslastung.
+
+Auch Nachhaltigkeit gehört zum Konzept: Rund 70 Prozent der teilnehmenden Betriebe setzen Mehrweggeschirr ein, das Fest wird vollständig mit Ökostrom versorgt und das Programm ausschließlich digital bereitgestellt.`;
 
 // Cached analysis for the example above — the characteristics that matter for 20–35.
 const ANALYSIS = {
@@ -686,7 +778,7 @@ const ANALYSIS = {
     { label: "Tonalität", value: 68, muted: true },
     { label: "Freshness", value: 96 },
   ],
-  tip: 'Ziehe die Laser- & Feuershow (22.30 Uhr) und die eFoil-/Slackline-Action weiter nach oben — diese Erlebnis-Hooks treiben Shares bei 20–35. Ein klarer Anfahrts-/ÖPNV-Hinweis erhöht die Resonanz um <span class="text-canvas font-semibold">+14%</span>.',
+  tip: "Ziehe die Feuer-, Licht- und Pyroshows um 22.30 Uhr weiter nach oben und bündele Datum, Ort und freien Eintritt in einem Saveable. Diese konkreten Service-Infos erhöhen die Chance auf Saves und Shares bei 20–35.",
 };
 
 function AnalyzerSection() {
@@ -697,7 +789,11 @@ function AnalyzerSection() {
 
   return (
     <section id="analyzer" className="space-y-10 scroll-mt-24">
-      <SectionHeader step="02" eyebrow="Validation" title="Wie gut trifft euer Artikel die Zielgruppe?" />
+      <SectionHeader
+        step="02"
+        eyebrow="Validation"
+        title="Wie gut trifft euer Artikel die Zielgruppe?"
+      />
 
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12 lg:col-span-7 space-y-3">
@@ -749,7 +845,9 @@ function AnalyzerSection() {
               <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-canvas/40">
                 Resonance Score
               </span>
-              <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${analyzed ? "bg-brand/20 text-brand" : "bg-canvas/10 text-canvas/50"}`}>
+              <span
+                className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${analyzed ? "bg-brand/20 text-brand" : "bg-canvas/10 text-canvas/50"}`}
+              >
                 {analyzed ? "Optimiert" : "Pending"}
               </span>
             </div>
@@ -782,8 +880,9 @@ function AnalyzerSection() {
             ) : (
               <div className="p-4 rounded-xl bg-canvas/5 border border-canvas/10 border-dashed">
                 <p className="text-xs leading-relaxed text-canvas/50">
-                  Klicke <span className="text-canvas/80 font-semibold">„Deep-Analyse starten"</span>, um Resonance
-                  Score, Kennzahlen und KI-Tipp zu sehen.
+                  Klicke{" "}
+                  <span className="text-canvas/80 font-semibold">„Deep-Analyse starten"</span>, um
+                  Resonance Score, Kennzahlen und KI-Tipp zu sehen.
                 </p>
               </div>
             )}
@@ -792,7 +891,11 @@ function AnalyzerSection() {
       </div>
 
       <PublishedThisWeek
-        draft={analyzed ? { title: analysis.title, score: analysis.score, predicted: analysis.predicted } : null}
+        draft={
+          analyzed
+            ? { title: analysis.title, score: analysis.score, predicted: analysis.predicted }
+            : null
+        }
       />
     </section>
   );
@@ -829,10 +932,12 @@ function PublishedThisWeek({
       <p className="text-[11px] text-muted-foreground mb-5 flex items-center gap-3">
         Resonanz-Score · vorhergesagte → tatsächliche Leser
         <span className="flex items-center gap-1.5">
-          <span className="w-3 h-[3px] rounded-full bg-brand" />tatsächlich
+          <span className="w-3 h-[3px] rounded-full bg-brand" />
+          tatsächlich
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-px h-2.5 bg-ink/40" />Prognose
+          <span className="w-px h-2.5 bg-ink/40" />
+          Prognose
         </span>
       </p>
 
@@ -868,7 +973,10 @@ function PublishedThisWeek({
           const high = p.score >= 70;
           const beat = p.actual >= p.predicted;
           return (
-            <li key={p.title} className="flex items-center gap-4 py-3 border-b last:border-b-0 border-ink/5">
+            <li
+              key={p.title}
+              className="flex items-center gap-4 py-3 border-b last:border-b-0 border-ink/5"
+            >
               <span
                 className={`shrink-0 w-9 text-center text-sm font-semibold tabular-nums rounded-md py-1 ${
                   high ? "bg-brand/10 text-brand" : "bg-ink/[0.04] text-muted-foreground"
@@ -893,7 +1001,9 @@ function PublishedThisWeek({
               <span className="shrink-0 text-right tabular-nums">
                 <span className="text-[11px] text-muted-foreground">{fmt(p.predicted)} → </span>
                 <span className="text-sm font-semibold">{fmt(p.actual)}</span>
-                <span className={`ml-1.5 text-[11px] font-semibold ${beat ? "text-success" : "text-muted-foreground"}`}>
+                <span
+                  className={`ml-1.5 text-[11px] font-semibold ${beat ? "text-success" : "text-muted-foreground"}`}
+                >
                   {beat ? "↗" : "↘"}
                 </span>
               </span>
@@ -914,9 +1024,14 @@ function ScoreRing({ value, pending }: { value: number; pending?: boolean }) {
       <svg viewBox="0 0 100 100" className="size-full -rotate-90">
         <circle cx="50" cy="50" r="42" fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="6" />
         <circle
-          cx="50" cy="50" r="42" fill="none"
-          stroke="oklch(0.58 0.22 255)" strokeWidth="6"
-          strokeDasharray={c} strokeDashoffset={offset}
+          cx="50"
+          cy="50"
+          r="42"
+          fill="none"
+          stroke="oklch(0.58 0.22 255)"
+          strokeWidth="6"
+          strokeDasharray={c}
+          strokeDashoffset={offset}
           strokeLinecap="round"
           style={{ transition: "stroke-dashoffset 1.2s cubic-bezier(0.19, 1, 0.22, 1)" }}
         />
@@ -931,12 +1046,24 @@ function ScoreRing({ value, pending }: { value: number; pending?: boolean }) {
   );
 }
 
-function ScoreBar({ label, value, muted, pending }: { label: string; value: number; muted?: boolean; pending?: boolean }) {
+function ScoreBar({
+  label,
+  value,
+  muted,
+  pending,
+}: {
+  label: string;
+  value: number;
+  muted?: boolean;
+  pending?: boolean;
+}) {
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between text-[10px] font-semibold uppercase tracking-wider">
         <span className="text-canvas/70">{label}</span>
-        <span className={muted ? "text-canvas/80" : "text-brand"}>{pending ? "–" : `${value}%`}</span>
+        <span className={muted ? "text-canvas/80" : "text-brand"}>
+          {pending ? "–" : `${value}%`}
+        </span>
       </div>
       <div className="h-1 bg-canvas/10 rounded-full overflow-hidden">
         <div
@@ -949,85 +1076,360 @@ function ScoreBar({ label, value, muted, pending }: { label: string; value: numb
 }
 
 // ---------- Step 3 ----------
-const slides = [
+type CarouselMode = "photo" | "illustration";
+
+const CAROUSEL_OPTIONS: Array<{
+  id: CarouselMode;
+  label: string;
+  kicker: string;
+  description: string;
+}> = [
   {
-    img: heroImg,
-    eyebrow: "Stimme Exklusiv",
-    headline: "STADT\nUPGRADE\n2026",
-    sub: "Wie Heilbronns Mitte zum neuen Hub für uns wird.",
-    tint: "from-black/10 via-black/30 to-black/80",
+    id: "photo",
+    label: "Foto / Editorial",
+    kicker: "Option 01",
+    description: "Atmosphärische Eventbilder, klare Headlines, wenig Text.",
   },
   {
-    img: slide2Img,
-    eyebrow: "Daten · Survey",
-    headline: "78%\nWOLLEN\nMEHR",
-    sub: "Studierende der TU Heilbronn fordern nachhaltige Mobilität.",
-    tint: "from-black/20 via-black/40 to-black/90",
-  },
-  {
-    img: slide3Img,
-    eyebrow: "Reportage",
-    headline: "WG-\nKRISE.\nLIVE.",
-    sub: "Junge Heilbronner:innen suchen seit Monaten Wohnraum.",
-    tint: "from-black/10 via-black/30 to-black/80",
+    id: "illustration",
+    label: "Illustration / Explainer",
+    kicker: "Option 02",
+    description: "Eigene Bildsprache mit Editorial-Collage und Saveable-Infos.",
   },
 ];
 
+const SLIDE_COUNT = 3;
+
+function CarouselArtwork({
+  mode,
+  active,
+  compact = false,
+}: {
+  mode: CarouselMode;
+  active: number;
+  compact?: boolean;
+}) {
+  if (mode === "photo") {
+    const photoSlides = [
+      {
+        label: "Lichterfest 2026",
+        headline: "LICHT AN.\nHEILBRONN.",
+        sub: "18.–20. Juni · Neckarmeile · Eintritt frei",
+        position: "center 54%",
+      },
+      {
+        label: "Jeden Abend",
+        headline: "22:30\nWIRD'S HELL.",
+        sub: "Feuer-, Licht- und Pyroshows auf vier Bühnen.",
+        position: "42% center",
+      },
+      {
+        label: "Dein Plan",
+        headline: "14 BANDS.\n60 FOOD-SPOTS.\n0 €.",
+        sub: "Täglich 18–24 Uhr. Speichern, weiterschicken, losziehen.",
+        position: "72% center",
+      },
+    ];
+    const slide = photoSlides[active];
+
+    return (
+      <div className="absolute inset-0 overflow-hidden bg-[#0b1737] text-white">
+        <img
+          src={lichterfestPhoto}
+          alt="Licht- und Lasershow beim Heilbronner Lichterfest am Neckar"
+          className="absolute inset-0 size-full object-cover scale-[1.08]"
+          style={{ objectPosition: slide.position }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,15,38,.08)_10%,rgba(8,15,38,.38)_48%,rgba(8,15,38,.96)_100%)]" />
+        <div
+          className={`absolute inset-0 flex flex-col justify-between ${compact ? "p-2.5" : "p-6"}`}
+        >
+          <div className="flex items-start justify-between">
+            <span
+              className={`${compact ? "text-[4px] px-1 py-0.5" : "text-[9px] px-2 py-1"} bg-[#ff5a46] font-bold uppercase tracking-[0.18em]`}
+            >
+              {slide.label}
+            </span>
+            <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono text-white/80`}>
+              0{active + 1} / 03
+            </span>
+          </div>
+          <div>
+            <h4
+              className={`${compact ? "text-[15px]" : active === 2 ? "text-[34px]" : "text-[43px]"} font-black leading-[0.88] tracking-[-0.055em] whitespace-pre-line`}
+            >
+              {slide.headline}
+            </h4>
+            {!compact && (
+              <div className="mt-4 flex gap-3 border-t border-white/30 pt-3">
+                <span className="mt-1 size-2 shrink-0 bg-[#ff5a46]" />
+                <p className="max-w-[25ch] text-[12px] font-medium leading-snug text-white/90">
+                  {slide.sub}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+        {!compact && (
+          <span className="absolute bottom-2 right-3 text-[6px] text-white/55">
+            Foto: Heilbronn Marketing GmbH
+          </span>
+        )}
+      </div>
+    );
+  }
+
+  if (active === 0) {
+    return (
+      <div className="absolute inset-0 overflow-hidden bg-[#f6efdf] text-[#0b2454]">
+        <div className={`absolute inset-x-0 top-0 ${compact ? "h-2" : "h-3"} bg-[#ff5a46]`} />
+        <div className={`absolute inset-0 flex flex-col ${compact ? "p-2.5 pt-4" : "p-6 pt-8"}`}>
+          <div className="flex items-start justify-between">
+            <div>
+              <p
+                className={`${compact ? "text-[4px]" : "text-[9px]"} font-bold uppercase tracking-[0.2em] text-[#ff5a46]`}
+              >
+                Heute in Heilbronn
+              </p>
+              <h4
+                className={`${compact ? "text-[13px] mt-1" : "text-[36px] mt-2"} font-black leading-[0.91] tracking-[-0.05em]`}
+              >
+                WAS GEHT
+                <br />
+                AM NECKAR?
+              </h4>
+            </div>
+            <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono`}>01 / 03</span>
+          </div>
+          <img
+            src={lichterfestIllustration}
+            alt="Illustrative Collage mit Heilbronner Skyline, Lichtern, Musik und Streetfood"
+            className={`${compact ? "mt-0" : "-mt-1"} w-full flex-1 object-contain drop-shadow-[0_12px_16px_rgba(11,36,84,.14)]`}
+          />
+          {!compact && (
+            <p className="text-[11px] font-semibold">Lichterfest · 18.–20. Juni · Eintritt frei</p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (active === 1) {
+    const moments = [
+      ["18:00", "Ankommen", "Food schnappen & Bühne suchen"],
+      ["20:00", "Live gehen", "Bands, DJs & Walking Acts"],
+      ["22:30", "Licht an", "Feuer-, Licht- und Pyroshows"],
+    ];
+    return (
+      <div className="absolute inset-0 overflow-hidden bg-[#0b2454] text-[#f6efdf]">
+        <div
+          className={`absolute rounded-full bg-[#ff5a46] ${compact ? "-right-5 top-8 size-12" : "-right-14 top-24 size-36"}`}
+        />
+        <div
+          className={`absolute rotate-12 bg-[#ffc64a] ${compact ? "left-2 bottom-5 size-4" : "left-5 bottom-12 size-10"}`}
+        />
+        <div className={`relative flex h-full flex-col ${compact ? "p-2.5" : "p-6"}`}>
+          <div className="flex justify-between">
+            <div>
+              <p
+                className={`${compact ? "text-[4px]" : "text-[9px]"} font-bold uppercase tracking-[0.2em] text-[#ffc64a]`}
+              >
+                Dein Abend in 3 Moves
+              </p>
+              <h4
+                className={`${compact ? "text-[13px] mt-1" : "text-[32px] mt-2"} font-black leading-[0.92] tracking-[-0.045em]`}
+              >
+                VON FOOD
+                <br />
+                BIS FEUER.
+              </h4>
+            </div>
+            <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono text-white/70`}>
+              02 / 03
+            </span>
+          </div>
+          <div className={`${compact ? "mt-2 space-y-1" : "mt-7 space-y-4"}`}>
+            {moments.map(([time, title, detail]) => (
+              <div
+                key={time}
+                className={`grid grid-cols-[auto_1fr] items-start border-t border-white/20 ${compact ? "gap-1 pt-1" : "gap-4 pt-3"}`}
+              >
+                <span
+                  className={`${compact ? "text-[7px]" : "text-[16px]"} font-mono font-bold text-[#ff725f]`}
+                >
+                  {time}
+                </span>
+                <div>
+                  <p className={`${compact ? "text-[6px]" : "text-[15px]"} font-bold`}>{title}</p>
+                  {!compact && (
+                    <p className="mt-0.5 text-[10px] leading-snug text-white/65">{detail}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          {!compact && (
+            <p className="mt-auto text-[9px] font-semibold uppercase tracking-[0.16em] text-[#ffc64a]">
+              Neckarmeile · Heilbronn
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="absolute inset-0 overflow-hidden bg-[#ff654f] text-[#0b2454]">
+      <div
+        className={`absolute rounded-full border-[#0b2454] ${compact ? "right-2 top-8 size-8 border-[5px]" : "right-6 top-20 size-24 border-[14px]"}`}
+      />
+      <div className={`relative flex h-full flex-col ${compact ? "p-2.5" : "p-6"}`}>
+        <div className="flex justify-between">
+          <p
+            className={`${compact ? "text-[4px]" : "text-[9px]"} font-bold uppercase tracking-[0.2em]`}
+          >
+            Kurz abspeichern
+          </p>
+          <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono`}>03 / 03</span>
+        </div>
+        <h4
+          className={`${compact ? "text-[15px] mt-3" : "text-[38px] mt-10"} max-w-[7ch] font-black leading-[0.88] tracking-[-0.055em] text-[#f6efdf]`}
+        >
+          DAS MUSST DU WISSEN.
+        </h4>
+        <div
+          className={`${compact ? "mt-auto grid grid-cols-2 gap-1" : "mt-auto grid grid-cols-2 gap-2"}`}
+        >
+          {[
+            ["18.–20.06.", "Donnerstag bis Samstag"],
+            ["18–24 Uhr", "Showtime 22:30"],
+            ["0 €", "Eintritt frei"],
+            ["Neckarmeile", "Mit Bus & Bahn easy"],
+          ].map(([value, label]) => (
+            <div key={value} className={`${compact ? "p-1" : "p-3"} bg-[#f6efdf]`}>
+              <p className={`${compact ? "text-[6px]" : "text-[14px]"} font-black leading-none`}>
+                {value}
+              </p>
+              {!compact && (
+                <p className="mt-1 text-[8px] font-medium leading-tight text-[#0b2454]/65">
+                  {label}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CreatorSection() {
+  const [mode, setMode] = useState<CarouselMode>("photo");
   const [active, setActive] = useState(0);
+
+  const chooseMode = (nextMode: CarouselMode) => {
+    setMode(nextMode);
+    setActive(0);
+  };
 
   return (
     <section id="creator" className="space-y-10 scroll-mt-24">
-      <SectionHeader step="03" eyebrow="Activation" title="Druckfertig für Instagram. Mit einem Klick." />
+      <SectionHeader
+        step="03"
+        eyebrow="Activation"
+        title="Druckfertig für Instagram. Mit einem Klick."
+      />
 
       <div className="grid grid-cols-12 gap-10 lg:gap-16 items-start">
         {/* Phone */}
         <div className="col-span-12 lg:col-span-5 flex justify-center">
-          <PhoneMock active={active} setActive={setActive} />
+          <PhoneMock mode={mode} active={active} setActive={setActive} />
         </div>
 
         {/* Controls */}
         <div className="col-span-12 lg:col-span-7 space-y-8">
+          <div>
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Creative Direction
+              </h3>
+              <span className="text-[10px] font-mono text-muted-foreground">2 Varianten</span>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {CAROUSEL_OPTIONS.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => chooseMode(option.id)}
+                  aria-pressed={mode === option.id}
+                  className={`group text-left p-5 transition-all duration-200 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                    mode === option.id
+                      ? "bg-ink text-canvas shadow-[0_14px_34px_-22px_rgba(11,36,84,.75)]"
+                      : "bg-card text-ink ring-1 ring-ink/8 hover:-translate-y-0.5 hover:ring-ink/15"
+                  }`}
+                >
+                  <span
+                    className={`text-[9px] font-bold uppercase tracking-[0.18em] ${mode === option.id ? "text-brand" : "text-muted-foreground"}`}
+                  >
+                    {option.kicker}
+                  </span>
+                  <p className="mt-2 text-sm font-semibold">{option.label}</p>
+                  <p
+                    className={`mt-1.5 text-[11px] leading-relaxed ${mode === option.id ? "text-canvas/55" : "text-muted-foreground"}`}
+                  >
+                    {option.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Caption editor */}
           <div className="bg-card ring-1 ring-ink/5 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
                 Caption · DE
               </h3>
-              <span className="text-[10px] font-mono text-muted-foreground">186 / 2200</span>
+              <span className="text-[10px] font-mono text-muted-foreground">319 / 2200</span>
             </div>
             <p className="text-sm leading-relaxed">
-              Neue Pläne für unser Zentrum 🌳 Mehr Grün, weniger Beton — und ihr habt ein Wort mitzureden.
-              Swipe für die Details, die wirklich zählen.
+              Heilbronn leuchtet ✨ Vom 18.–20. Juni wird die Neckarmeile zur Festivalmeile: vier
+              Bühnen, 14 Bands, DJs und rund 60 Food-Spots. Der Eintritt ist frei. Speichert euch
+              22:30 Uhr für die Feuer-, Licht- und Pyroshows – und schickt den Post an eure
+              Festival-Crew.
             </p>
             <div className="flex flex-wrap gap-1.5 mt-4">
-              {["#Heilbronn", "#HNX", "#Stadtentwicklung", "#GenZ", "#StimmeRadar"].map((h) => (
-                <span key={h} className="text-[11px] px-2 py-1 rounded-md bg-brand/10 text-brand font-semibold">
+              {["#Heilbronn", "#Lichterfest", "#Neckarmeile", "#HNX", "#StimmeRadar"].map((h) => (
+                <span
+                  key={h}
+                  className="text-[11px] px-2 py-1 rounded-md bg-brand/10 text-brand font-semibold"
+                >
                   {h}
                 </span>
               ))}
             </div>
+            <p className="mt-4 border-t border-ink/5 pt-3 text-[10px] text-muted-foreground">
+              Fakten geprüft · Quelle: Heilbronn Marketing GmbH, 11.06.2026
+            </p>
           </div>
 
           {/* Slide picker */}
           <div className="bg-card ring-1 ring-ink/5 rounded-2xl p-6">
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-4">
-              Slides · {slides.length}
+              Slides · {SLIDE_COUNT}
             </h3>
             <div className="grid grid-cols-3 gap-3">
-              {slides.map((s, i) => (
+              {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActive(i)}
+                  aria-label={`Slide ${i + 1} anzeigen`}
                   className={`aspect-square rounded-lg overflow-hidden relative ring-2 transition-all ${
-                    active === i ? "ring-brand scale-[1.02]" : "ring-transparent opacity-70 hover:opacity-100"
+                    active === i
+                      ? "ring-brand scale-[1.02]"
+                      : "ring-transparent opacity-70 hover:opacity-100"
                   }`}
                 >
-                  <img src={s.img} alt={`Slide ${i + 1}`} className="size-full object-cover" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <span className="absolute bottom-1.5 left-2 text-[10px] font-bold text-white">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                  <CarouselArtwork mode={mode} active={i} compact />
                 </button>
               ))}
             </div>
@@ -1037,7 +1439,13 @@ function CreatorSection() {
           <div className="space-y-4">
             <div className="p-4 rounded-xl bg-brand/5 border border-brand/10 flex items-center gap-3">
               <div className="size-9 rounded-full bg-brand/15 flex items-center justify-center text-brand">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="size-4"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
@@ -1054,7 +1462,13 @@ function CreatorSection() {
               </button>
               <button className="flex-[2] bg-brand text-brand-foreground py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand/25 hover:scale-[1.01] transition-transform">
                 Freigeben & auf Instagram posten
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="size-4">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  className="size-4"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 5l7 7-7 7" />
                 </svg>
               </button>
@@ -1066,8 +1480,15 @@ function CreatorSection() {
   );
 }
 
-function PhoneMock({ active, setActive }: { active: number; setActive: (i: number) => void }) {
-  const slide = slides[active];
+function PhoneMock({
+  mode,
+  active,
+  setActive,
+}: {
+  mode: CarouselMode;
+  active: number;
+  setActive: (i: number) => void;
+}) {
   return (
     <div className="w-[340px] shrink-0">
       <div className="relative aspect-[9/19.5] bg-[#0a0a0a] rounded-[48px] p-[10px] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.4)]">
@@ -1089,7 +1510,13 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
 
           {/* IG top bar */}
           <header className="relative h-14 flex items-center justify-center border-b border-black/5">
-            <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2.2" className="size-6 absolute left-3.5">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="black"
+              strokeWidth="2.2"
+              className="size-6 absolute left-3.5"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             <div className="flex flex-col items-center leading-tight">
@@ -1115,43 +1542,13 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
           </div>
 
           {/* Carousel image */}
-          <div className="relative aspect-square w-full bg-black overflow-hidden">
-            <img
-              src={slide.img}
-              alt={slide.eyebrow}
-              className="absolute inset-0 size-full object-cover"
-              loading="lazy"
-            />
-            <div className={`absolute inset-0 bg-gradient-to-b ${slide.tint}`} />
-
-            {/* Slide content */}
-            <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-[0.25em] bg-brand px-2 py-1 rounded-sm">
-                  {slide.eyebrow}
-                </span>
-                <span className="text-[10px] font-mono text-white/80">
-                  {String(active + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
-                </span>
-              </div>
-              <div>
-                <h4 className="text-[44px] font-black leading-[0.88] tracking-[-0.04em] uppercase whitespace-pre-line">
-                  {slide.headline}
-                </h4>
-                <div className="flex items-start gap-3 mt-5">
-                  <div className="w-1 self-stretch bg-brand mt-1" />
-                  <p className="text-[12px] font-medium leading-snug max-w-[24ch] text-white/95">
-                    {slide.sub}
-                  </p>
-                </div>
-              </div>
-            </div>
-
+          <div className="relative aspect-square w-full overflow-hidden">
+            <CarouselArtwork mode={mode} active={active} />
           </div>
 
           {/* Carousel dots */}
           <div className="flex justify-center gap-1.5 py-2.5">
-            {slides.map((_, i) => (
+            {Array.from({ length: SLIDE_COUNT }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setActive(i)}
@@ -1187,11 +1584,12 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
           {/* Caption */}
           <div className="px-3.5 space-y-1 pb-3">
             <p className="text-[12px] leading-snug text-black">
-              <span className="font-semibold">stimmeonline</span> Neue Pläne für unser Zentrum 🌳 Mehr Grün,
-              weniger Beton — und ihr habt ein… <span className="text-black/50">mehr</span>
+              <span className="font-semibold">stimmeonline</span> Heilbronn leuchtet ✨ Vom 18.–20.
+              Juni wird die Neckarmeile zur Festivalmeile…{" "}
+              <span className="text-black/50">mehr</span>
             </p>
             <p className="text-[12px] leading-snug text-[#0095f6]">
-              #Heilbronn #Stadtentwicklung #GenZ #StimmeRadar
+              #Heilbronn #Lichterfest #Neckarmeile #HNX
             </p>
             <p className="text-[11px] text-black/40">Alle 8 Kommentare ansehen</p>
             <p className="text-[11px] text-black/40 pt-0.5">Vor 2 Stunden</p>
@@ -1223,21 +1621,33 @@ function PhoneMock({ active, setActive }: { active: number; setActive: (i: numbe
 function HeartIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"
+      />
     </svg>
   );
 }
 function RepostIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M17 1l4 4-4 4M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 01-4 4H3"
+      />
     </svg>
   );
 }
 function CommentIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
+      />
     </svg>
   );
 }
@@ -1251,7 +1661,11 @@ function ShareIcon() {
 function BookmarkIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="1.8" className="size-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"
+      />
     </svg>
   );
 }
