@@ -690,7 +690,8 @@ const ANALYSIS = {
 };
 
 function AnalyzerSection() {
-  const [article, setArticle] = useState(DEFAULT_ARTICLE);
+  // Starts empty — paste the cached DEFAULT_ARTICLE text in live, then analyse.
+  const [article, setArticle] = useState("");
   const [analyzed, setAnalyzed] = useState(false);
   const analysis = ANALYSIS;
 
@@ -719,9 +720,21 @@ function AnalyzerSection() {
               placeholder="Artikeltext einfügen…"
             />
             <div className="absolute bottom-4 right-4 flex gap-2">
+              {!article.trim() && (
+                <button
+                  onClick={() => {
+                    setArticle(DEFAULT_ARTICLE);
+                    setAnalyzed(false);
+                  }}
+                  className="text-muted-foreground text-sm font-semibold py-2.5 px-4 rounded-lg ring-1 ring-ink/10 hover:bg-ink/5 transition-colors"
+                >
+                  Beispieltext einfügen
+                </button>
+              )}
               <button
                 onClick={() => setAnalyzed(true)}
-                className="bg-ink text-canvas text-sm font-semibold py-2.5 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+                disabled={!article.trim()}
+                className="bg-ink text-canvas text-sm font-semibold py-2.5 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-30 disabled:pointer-events-none"
               >
                 <span className="size-1.5 rounded-full bg-brand" />
                 Deep-Analyse starten
