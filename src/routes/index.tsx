@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, type MouseEvent } from "react";
-import lichterfestPhoto from "@/assets/lichterfest-night.jpg";
-import lichterfestIllustration from "@/assets/lichterfest-illustration.png";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import lichterfestStreetlife from "@/assets/lichterfest-streetlife.jpg";
+import lichterfestLiveBand2026 from "@/assets/lichterfest-live-band-2026.jpg";
+import lichterfestWalkingActs2026 from "@/assets/lichterfest-walking-acts-2026.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -1114,23 +1115,32 @@ function CarouselArtwork({
       {
         label: "Lichterfest 2026",
         headline: "Licht an,\nHeilbronn.",
-        sub: "18.–20. Juni · Neckarmeile · Eintritt frei",
-        position: "center 54%",
-        overlay: "linear-gradient(180deg,rgba(8,15,38,.04) 0%,rgba(8,15,38,.32) 44%,rgba(8,15,38,.97) 100%)",
+        sub: "4 Bühnen, 14 Bands, DJs & rund 60 Food-Spots an der Neckarmeile.",
+        photo: lichterfestStreetlife,
+        position: "center 38%",
+        overlay:
+          "linear-gradient(180deg,rgba(8,15,38,.06) 0%,rgba(8,15,38,.34) 44%,rgba(8,15,38,.97) 100%)",
+        credit: "Foto: STIMME.de Bildergalerie · Lichterfest 2025",
       },
       {
         label: "Jeden Abend",
-        headline: "22:30 —\ndie Show\nbeginnt.",
-        sub: "Feuer-, Licht- und Pyroshows auf vier Bühnen.",
-        position: "68% 36%",
-        overlay: "linear-gradient(180deg,rgba(55,18,4,.04) 0%,rgba(40,12,4,.38) 44%,rgba(18,5,2,.97) 100%)",
+        headline: "22:30\ndie Show\nbeginnt.",
+        sub: "Feuer-, Licht- und Pyroshow direkt über dem Neckar.",
+        photo: lichterfestLiveBand2026,
+        position: "center 45%",
+        overlay:
+          "linear-gradient(180deg,rgba(8,15,38,.01) 0%,rgba(8,15,38,.12) 44%,rgba(8,15,38,.84) 100%)",
+        credit: "Foto: Heidrun Rosenberger · Lichterfest 2026",
       },
       {
         label: "Dein Plan",
         headline: "0 €.\n14 Bands.\nNeckarmeile.",
-        sub: "Täglich 18–24 Uhr. Speichern & losziehen.",
-        position: "38% 68%",
-        overlay: "linear-gradient(180deg,rgba(4,10,48,.06) 0%,rgba(4,10,48,.4) 44%,rgba(4,10,48,.97) 100%)",
+        sub: "Täglich 18-24 Uhr, Eintritt frei. Speichern & losziehen.",
+        photo: lichterfestWalkingActs2026,
+        position: "center 48%",
+        overlay:
+          "linear-gradient(180deg,rgba(8,15,38,.01) 0%,rgba(8,15,38,.12) 44%,rgba(8,15,38,.84) 100%)",
+        credit: "Foto: Heidrun Rosenberger · Lichterfest 2026",
       },
     ];
     const slide = photoSlides[active];
@@ -1138,8 +1148,8 @@ function CarouselArtwork({
     return (
       <div className="absolute inset-0 overflow-hidden bg-[#0b1737] text-white">
         <img
-          src={lichterfestPhoto}
-          alt="Licht- und Lasershow beim Heilbronner Lichterfest am Neckar"
+          src={slide.photo}
+          alt={`${slide.label}: ${slide.headline.replace(/\n/g, " ")}`}
           className="absolute inset-0 size-full object-cover scale-[1.08]"
           style={{ objectPosition: slide.position }}
         />
@@ -1149,7 +1159,7 @@ function CarouselArtwork({
         >
           <div className="flex items-start justify-between">
             <span
-              className={`${compact ? "text-[4px] px-1 py-0.5" : "text-[9px] px-2 py-1"} bg-[#ff5a46] font-bold uppercase tracking-[0.18em]`}
+              className={`${compact ? "text-[4px] px-1 py-0.5" : "text-[9px] px-2 py-1"} bg-brand font-bold uppercase tracking-[0.18em]`}
             >
               {slide.label}
             </span>
@@ -1165,7 +1175,7 @@ function CarouselArtwork({
             </h4>
             {!compact && (
               <div className="mt-4 flex gap-3 border-t border-white/30 pt-3">
-                <span className="mt-1 size-2 shrink-0 bg-[#ff5a46]" />
+                <span className="mt-1 size-2 shrink-0 bg-brand" />
                 <p className="max-w-[25ch] text-[12px] font-medium leading-snug text-white/90">
                   {slide.sub}
                 </p>
@@ -1174,178 +1184,146 @@ function CarouselArtwork({
           </div>
         </div>
         {!compact && (
-          <span className="absolute bottom-2 right-3 text-[6px] text-white/55">
-            Foto: Heilbronn Marketing GmbH
-          </span>
+          <span className="absolute bottom-2 right-3 text-[6px] text-white/55">{slide.credit}</span>
         )}
       </div>
     );
   }
 
-  if (active === 0) {
-    return (
-      <div className="absolute inset-0 overflow-hidden bg-[#f6efdf] text-[#0b2454]">
-        <div className={`absolute inset-x-0 top-0 ${compact ? "h-2" : "h-3"} bg-[#ff5a46]`} />
-        <div className={`absolute inset-0 flex flex-col ${compact ? "p-2.5 pt-4" : "p-6 pt-8"}`}>
-          <div className="flex items-start justify-between">
-            <div>
-              <p
-                className={`${compact ? "text-[4px]" : "text-[9px]"} font-bold uppercase tracking-[0.2em] text-[#ff5a46]`}
-              >
-                Heute in Heilbronn
-              </p>
-              <h4
-                className={`${compact ? "text-[13px] mt-1" : "text-[36px] mt-2"} font-black leading-[0.91] tracking-[-0.05em]`}
-              >
-                WAS GEHT
-                <br />
-                AM NECKAR?
-              </h4>
-            </div>
-            <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono`}>01 / 03</span>
-          </div>
-          <div className="flex-1 relative flex items-center justify-center overflow-hidden">
-            {/* Large decorative circle outline */}
-            <div
-              className={`absolute rounded-full ${compact ? "-right-6 -bottom-4 size-20 border-[5px]" : "-right-16 -bottom-10 size-56 border-[14px]"}`}
-              style={{ borderColor: "rgba(11,36,84,0.09)" }}
-            />
-            {/* Small accent dot */}
-            <div
-              className={`absolute rounded-full bg-[#ffc64a] ${compact ? "left-2 bottom-2 size-3" : "left-5 bottom-6 size-9"}`}
-              style={{ opacity: 0.65 }}
-            />
-            {/* Typographic poster — the headline IS the visual */}
-            <div className={compact ? "-mt-1" : "-mt-3"}>
-              <p
-                className={`font-black leading-[0.78] tracking-[-0.06em] ${compact ? "text-[28px]" : "text-[72px]"}`}
-              >
-                LICHT
-              </p>
-              <p
-                className={`font-black leading-[0.78] tracking-[-0.06em] text-[#ff5a46] ${compact ? "text-[28px]" : "text-[72px]"}`}
-              >
-                FEST
-              </p>
-              {!compact && (
-                <p className="mt-4 text-[10px] font-bold tracking-[0.18em] opacity-30">
-                  HEILBRONN · NECKAR · 2026
-                </p>
-              )}
-            </div>
-          </div>
-          {!compact && (
-            <p className="text-[11px] font-semibold">Lichterfest · 18.–20. Juni · Eintritt frei</p>
-          )}
-        </div>
-      </div>
-    );
-  }
+  // Grayscale photography keeps the reference's high-contrast editorial look.
+  const GrayscalePhoto = ({
+    src,
+    alt,
+    position,
+  }: {
+    src: string;
+    alt: string;
+    position: string;
+  }) => (
+    <img
+      src={src}
+      alt={alt}
+      className="absolute inset-0 size-full object-cover grayscale contrast-110"
+      style={{ objectPosition: position }}
+    />
+  );
 
-  if (active === 1) {
-    const moments = [
-      ["18:00", "Ankommen", "Food schnappen & Bühne suchen"],
-      ["20:00", "Live gehen", "Bands, DJs & Walking Acts"],
-      ["22:30", "Licht an", "Feuer-, Licht- und Pyroshows"],
-    ];
-    return (
-      <div className="absolute inset-0 overflow-hidden bg-[#0b2454] text-[#f6efdf]">
-        <div
-          className={`absolute rounded-full bg-[#ff5a46] ${compact ? "-right-5 top-8 size-12" : "-right-14 top-24 size-36"}`}
-        />
-        <div
-          className={`absolute rotate-12 bg-[#ffc64a] ${compact ? "left-2 bottom-5 size-4" : "left-5 bottom-12 size-10"}`}
-        />
-        <div className={`relative flex h-full flex-col ${compact ? "p-2.5" : "p-6"}`}>
-          <div className="flex justify-between">
-            <div>
-              <p
-                className={`${compact ? "text-[4px]" : "text-[9px]"} font-bold uppercase tracking-[0.2em] text-[#ffc64a]`}
-              >
-                Dein Abend in 3 Moves
-              </p>
-              <h4
-                className={`${compact ? "text-[13px] mt-1" : "text-[32px] mt-2"} font-black leading-[0.92] tracking-[-0.045em]`}
-              >
-                VON FOOD
-                <br />
-                BIS FEUER.
-              </h4>
-            </div>
-            <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono text-white/70`}>
-              02 / 03
-            </span>
-          </div>
-          <div className={`${compact ? "mt-2 space-y-1" : "mt-7 space-y-4"}`}>
-            {moments.map(([time, title, detail]) => (
-              <div
-                key={time}
-                className={`grid grid-cols-[auto_1fr] items-start border-t border-white/20 ${compact ? "gap-1 pt-1" : "gap-4 pt-3"}`}
-              >
-                <span
-                  className={`${compact ? "text-[7px]" : "text-[16px]"} font-mono font-bold text-[#ff725f]`}
-                >
-                  {time}
-                </span>
-                <div>
-                  <p className={`${compact ? "text-[6px]" : "text-[15px]"} font-bold`}>{title}</p>
-                  {!compact && (
-                    <p className="mt-0.5 text-[10px] leading-snug text-white/65">{detail}</p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          {!compact && (
-            <p className="mt-auto text-[9px] font-semibold uppercase tracking-[0.16em] text-[#ffc64a]">
-              Neckarmeile · Heilbronn
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
+  // Loose, doubled oval and underline strokes mirror the handwritten reference note.
+  const Doodle = ({ label }: { label: string }) => (
+    <div
+      className={`absolute rotate-[-7deg] text-center text-brand font-hand font-bold ${
+        compact
+          ? "right-0.5 bottom-0.5 h-5 w-8 text-[4px]"
+          : "right-4 bottom-0 h-12 w-[78px] text-[13px]"
+      } leading-[0.92] whitespace-pre-line`}
+    >
+      <span className="absolute inset-0 rounded-[48%_52%_46%_54%/54%_46%_55%_45%] border-[1.5px] border-brand rotate-[3deg]" />
+      <span className="absolute inset-[2px_-2px_-1px_1px] rounded-[52%_46%_54%_48%/46%_55%_45%_54%] border border-brand/75 rotate-[-2deg]" />
+      <span className="relative flex size-full items-center justify-center px-1">{label}</span>
+      <span
+        className={`absolute bg-brand rotate-[-5deg] ${compact ? "-bottom-0.5 left-1 h-px w-6" : "-bottom-1.5 left-3 h-px w-14"}`}
+      />
+      <span
+        className={`absolute bg-brand/70 rotate-[2deg] ${compact ? "-bottom-1 left-2 h-px w-5" : "-bottom-2.5 left-5 h-px w-12"}`}
+      />
+    </div>
+  );
+
+  const slides = [
+    {
+      tag: "LICHTERFEST!",
+      headline: "LICHT AN,\nHEILBRONN!",
+      doodle: "CHECK\nTHIS OUT!",
+      photo: lichterfestStreetlife,
+      position: "center 38%",
+      body: "Vier Bühnen, 14 Bands und rund 60 Food-Spots. Eintritt frei an der Neckarmeile.",
+      cta: "MEHR INFOS",
+    },
+    {
+      tag: "JEDEN ABEND",
+      headline: "22:30\nSHOWTIME!",
+      doodle: "NICHT\nVERPASSEN!",
+      photo: lichterfestLiveBand2026,
+      position: "center 45%",
+      credit: "Foto: Heidrun Rosenberger · 2026",
+      body: "Feuer, Licht und Pyro direkt über dem Neckar. An allen drei Abenden.",
+      cta: "PROGRAMM",
+    },
+    {
+      tag: "DEIN PLAN",
+      headline: "0 € EINTRITT.\nVOLLES PROGRAMM.",
+      doodle: "JETZT\nSPEICHERN!",
+      photo: lichterfestWalkingActs2026,
+      position: "center 48%",
+      credit: "Foto: Heidrun Rosenberger · 2026",
+      body: "18.-20. Juni, täglich 18-24 Uhr. Am besten mit Bus und Bahn anreisen.",
+      cta: "ALLE INFOS",
+    },
+  ];
+  const slide = slides[active];
 
   return (
-    <div className="absolute inset-0 overflow-hidden bg-[#ff654f] text-[#0b2454]">
+    <div className="absolute inset-0 flex flex-col overflow-hidden bg-white text-[#0b1330]">
+      {/* headline zone */}
       <div
-        className={`absolute rounded-full border-[#0b2454] ${compact ? "right-2 top-8 size-8 border-[5px]" : "right-6 top-20 size-24 border-[14px]"}`}
-      />
-      <div className={`relative flex h-full flex-col ${compact ? "p-2.5" : "p-6"}`}>
-        <div className="flex justify-between">
-          <p
-            className={`${compact ? "text-[4px]" : "text-[9px]"} font-bold uppercase tracking-[0.2em]`}
-          >
-            Kurz abspeichern
-          </p>
-          <span className={`${compact ? "text-[5px]" : "text-[9px]"} font-mono`}>03 / 03</span>
-        </div>
+        className={`relative shrink-0 ${compact ? "h-[34%] px-1.5 pt-1.5" : "h-[35%] px-5 pt-4"}`}
+      >
+        <span
+          className={`inline-block bg-brand text-white -rotate-2 font-poster uppercase tracking-[0.04em] ${
+            compact ? "text-[3px] px-1 py-0.5 mb-1" : "text-[10px] px-2.5 py-1 mb-1.5"
+          }`}
+        >
+          {slide.tag}
+        </span>
         <h4
-          className={`${compact ? "text-[15px] mt-3" : "text-[38px] mt-10"} max-w-[7ch] font-black leading-[0.88] tracking-[-0.055em] text-[#f6efdf]`}
+          className={`${compact ? "text-[12px]" : "text-[26px]"} max-w-[82%] font-poster uppercase leading-[0.88] tracking-[-0.01em] whitespace-pre-line`}
         >
-          DAS MUSST DU WISSEN.
+          {slide.headline}
         </h4>
+        <Doodle label={slide.doodle} />
+      </div>
+
+      {/* Offset photo card over a diagonal blue field. */}
+      <div
+        className="relative min-h-0 flex-1 bg-brand"
+        style={{ clipPath: "polygon(0 7%, 100% 0, 100% 100%, 0 100%)" }}
+      >
         <div
-          className={`${compact ? "mt-auto grid grid-cols-2 gap-1" : "mt-auto grid grid-cols-2 gap-2"}`}
+          className={`absolute overflow-hidden bg-[#d8d8d8] shadow-[2px_4px_0_rgba(11,19,48,0.18)] ${
+            compact ? "inset-x-1.5 top-1.5 bottom-0" : "inset-x-4 top-3 -bottom-1"
+          }`}
+          style={{ clipPath: "polygon(1% 3%, 99% 0, 97.5% 98%, 0 100%)" }}
         >
-          {[
-            ["18.–20.06.", "Donnerstag bis Samstag"],
-            ["18–24 Uhr", "Showtime 22:30"],
-            ["0 €", "Eintritt frei"],
-            ["Neckarmeile", "Mit Bus & Bahn easy"],
-          ].map(([value, label]) => (
-            <div key={value} className={`${compact ? "p-1" : "p-3"} bg-[#f6efdf]`}>
-              <p className={`${compact ? "text-[6px]" : "text-[14px]"} font-black leading-none`}>
-                {value}
-              </p>
-              {!compact && (
-                <p className="mt-1 text-[8px] font-medium leading-tight text-[#0b2454]/65">
-                  {label}
-                </p>
-              )}
-            </div>
-          ))}
+          <GrayscalePhoto
+            src={slide.photo}
+            alt={slide.headline.replace(/\n/g, " ")}
+            position={slide.position}
+          />
+          {!compact && (
+            <span className="absolute bottom-1 right-1 bg-[#0b1330]/65 px-1 py-0.5 text-[5px] leading-none text-white/80">
+              {slide.credit ?? "Foto: STIMME.de Bildergalerie"}
+            </span>
+          )}
         </div>
+        {!compact && (
+          <span className="absolute bottom-2.5 left-3 inline-flex items-center gap-2 border border-[#0b1330] bg-white px-3 py-1.5 text-[9px] font-semibold tracking-[0.02em] shadow-[2px_3px_0_rgba(11,19,48,0.16)]">
+            {slide.cta}
+            <span aria-hidden="true" className="text-[13px] leading-none">
+              →
+            </span>
+          </span>
+        )}
+      </div>
+
+      {/* Compact blue caption field from the reference composition. */}
+      <div
+        className={`shrink-0 bg-brand text-white ${compact ? "h-3 px-1.5" : "min-h-[42px] px-7 py-2"}`}
+      >
+        {!compact && (
+          <p className="mx-auto max-w-[34ch] text-center text-[9px] leading-[1.35] text-white/90">
+            {slide.body}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -1383,29 +1361,50 @@ function CreatorSection() {
               </h3>
               <span className="text-[10px] font-mono text-muted-foreground">2 Varianten</span>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div
+              className="grid gap-3 sm:grid-cols-2"
+              role="group"
+              aria-label="Creative Direction wählen"
+            >
               {CAROUSEL_OPTIONS.map((option) => (
                 <button
                   key={option.id}
                   onClick={() => chooseMode(option.id)}
                   aria-pressed={mode === option.id}
-                  className={`group text-left p-5 transition-all duration-200 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                  className={`group relative min-h-36 rounded-xl border-2 p-5 text-left transition-all duration-200 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${
                     mode === option.id
-                      ? "bg-ink text-canvas shadow-[0_14px_34px_-22px_rgba(11,36,84,.75)]"
-                      : "bg-card text-ink ring-1 ring-ink/8 hover:-translate-y-0.5 hover:ring-ink/15"
+                      ? "border-brand bg-brand/5 text-ink shadow-[0_14px_34px_-22px_rgba(0,117,232,.55)]"
+                      : "border-border bg-card text-ink hover:-translate-y-0.5 hover:border-brand/45 hover:bg-brand/[0.025] hover:shadow-sm"
                   }`}
                 >
-                  <span
-                    className={`text-[9px] font-bold uppercase tracking-[0.18em] ${mode === option.id ? "text-brand" : "text-muted-foreground"}`}
-                  >
-                    {option.kicker}
+                  <span className="flex items-center justify-between gap-3">
+                    <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-brand">
+                      {option.kicker}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                        mode === option.id
+                          ? "border-brand bg-brand"
+                          : "border-ink/25 bg-white group-hover:border-brand/60"
+                      }`}
+                    >
+                      {mode === option.id && <span className="size-1.5 rounded-full bg-white" />}
+                    </span>
                   </span>
-                  <p className="mt-2 text-sm font-semibold">{option.label}</p>
-                  <p
-                    className={`mt-1.5 text-[11px] leading-relaxed ${mode === option.id ? "text-canvas/55" : "text-muted-foreground"}`}
-                  >
+                  <p className="mt-3 text-base font-semibold tracking-[-0.015em]">{option.label}</p>
+                  <p className="mt-1.5 max-w-[38ch] text-[11px] leading-relaxed text-muted-foreground">
                     {option.description}
                   </p>
+                  <span
+                    className={`mt-4 inline-flex items-center rounded-md px-2.5 py-1 text-[10px] font-semibold transition-colors ${
+                      mode === option.id
+                        ? "bg-brand text-white"
+                        : "bg-ink/5 text-ink/60 group-hover:bg-brand/10 group-hover:text-brand"
+                    }`}
+                  >
+                    {mode === option.id ? "Ausgewählt" : "Option auswählen"}
+                  </span>
                 </button>
               ))}
             </div>
@@ -1420,9 +1419,9 @@ function CreatorSection() {
               <span className="text-[10px] font-mono text-muted-foreground">319 / 2200</span>
             </div>
             <p className="text-sm leading-relaxed">
-              Heilbronn leuchtet ✨ Vom 18.–20. Juni wird die Neckarmeile zur Festivalmeile: vier
+              Heilbronn leuchtet ✨ Vom 18.-20. Juni wird die Neckarmeile zur Festivalmeile: vier
               Bühnen, 14 Bands, DJs und rund 60 Food-Spots. Der Eintritt ist frei. Speichert euch
-              22:30 Uhr für die Feuer-, Licht- und Pyroshows – und schickt den Post an eure
+              22:30 Uhr für die Feuer-, Licht- und Pyroshows. Schickt den Post an eure
               Festival-Crew.
             </p>
             <div className="flex flex-wrap gap-1.5 mt-4">
@@ -1612,7 +1611,7 @@ function PhoneMock({
           {/* Caption */}
           <div className="px-3.5 space-y-1 pb-3">
             <p className="text-[12px] leading-snug text-black">
-              <span className="font-semibold">stimmeonline</span> Heilbronn leuchtet ✨ Vom 18.–20.
+              <span className="font-semibold">stimmeonline</span> Heilbronn leuchtet ✨ Vom 18.-20.
               Juni wird die Neckarmeile zur Festivalmeile…{" "}
               <span className="text-black/50">mehr</span>
             </p>

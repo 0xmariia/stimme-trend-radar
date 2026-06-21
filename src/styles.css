@@ -35,6 +35,8 @@
   --color-surface: var(--surface);
   --color-success: var(--success);
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-poster: "Anton", "Inter", system-ui, sans-serif;
+  --font-hand: "Caveat", cursive;
 }
 
 :root {
