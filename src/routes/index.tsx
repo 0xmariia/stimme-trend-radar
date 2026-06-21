@@ -280,7 +280,9 @@ function Nav({ step, onStep }: { step: number; onStep: (i: number) => void }) {
             S
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="font-semibold tracking-tight text-[15px]">Stimme Radar</span>
+            <span className="font-semibold tracking-tight text-[15px]">
+              Stimme {STEPS[step].label}
+            </span>
             <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
               Heilbronner Stimme · Editorial
             </span>
