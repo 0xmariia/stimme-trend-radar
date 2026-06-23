@@ -1102,6 +1102,14 @@ const CAROUSEL_OPTIONS: Array<{
 ];
 
 const SLIDE_COUNT = 3;
+const DRAFT_STORAGE_KEY = "stimme-creator-drafts";
+
+type CreatorDraft = {
+  id: string;
+  mode: CarouselMode;
+  active: number;
+  savedAt: string;
+};
 
 function CarouselArtwork({
   mode,
@@ -1334,10 +1342,71 @@ function CarouselArtwork({
 function CreatorSection() {
   const [mode, setMode] = useState<CarouselMode>("photo");
   const [active, setActive] = useState(0);
+  const [drafts, setDrafts] = useState<CreatorDraft[]>([]);
+  const [showDrafts, setShowDrafts] = useState(false);
+  const [draftStatus, setDraftStatus] = useState<"ready" | "saving" | "saved">("ready");
+  const [publishStatus, setPublishStatus] = useState<"ready" | "publishing" | "published">("ready");
+
+  useEffect(() => {
+    try {
+      const storedDrafts = window.localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (!storedDrafts) return;
+
+      const parsedDrafts = JSON.parse(storedDrafts) as CreatorDraft[];
+      if (Array.isArray(parsedDrafts)) setDrafts(parsedDrafts);
+    } catch {
+      window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (draftStatus !== "saving") return;
+
+    const timer = window.setTimeout(() => {
+      const newDraft: CreatorDraft = {
+        id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        mode,
+        active,
+        savedAt: new Date().toISOString(),
+      };
+
+      setDrafts((currentDrafts) => {
+        const nextDrafts = [newDraft, ...currentDrafts].slice(0, 12);
+        window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(nextDrafts));
+        return nextDrafts;
+      });
+      setDraftStatus("saved");
+      setShowDrafts(true);
+    }, 700);
+    return () => window.clearTimeout(timer);
+  }, [active, draftStatus, mode]);
+
+  useEffect(() => {
+    if (publishStatus !== "publishing") return;
+
+    const timer = window.setTimeout(() => setPublishStatus("published"), 1200);
+    return () => window.clearTimeout(timer);
+  }, [publishStatus]);
 
   const chooseMode = (nextMode: CarouselMode) => {
     setMode(nextMode);
     setActive(0);
+    setDraftStatus("ready");
+  };
+
+  const openDraft = (draft: CreatorDraft) => {
+    setMode(draft.mode);
+    setActive(draft.active);
+    setDraftStatus("saved");
+    setPublishStatus("ready");
+  };
+
+  const deleteDraft = (draftId: string) => {
+    setDrafts((currentDrafts) => {
+      const nextDrafts = currentDrafts.filter((draft) => draft.id !== draftId);
+      window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(nextDrafts));
+      return nextDrafts;
+    });
   };
 
   return (
@@ -1351,11 +1420,143 @@ function CreatorSection() {
       <div className="grid grid-cols-12 gap-10 lg:gap-16 items-start">
         {/* Phone */}
         <div className="col-span-12 lg:col-span-5 flex justify-center">
-          <PhoneMock mode={mode} active={active} setActive={setActive} />
+          <PhoneMock
+            mode={mode}
+            active={active}
+            setActive={setActive}
+            published={publishStatus === "published"}
+          />
         </div>
 
         {/* Controls */}
         <div className="col-span-12 lg:col-span-7 space-y-8">
+          <div className="flex justify-end">
+            <button
+              onClick={() => setShowDrafts((isVisible) => !isVisible)}
+              aria-expanded={showDrafts}
+              aria-controls="creator-drafts"
+              className="inline-flex items-center gap-2 rounded-lg border border-ink/10 bg-card px-3.5 py-2 text-xs font-semibold text-ink transition-colors hover:border-brand/35 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="size-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6.5A2.5 2.5 0 016.5 4h3l2 2h6A2.5 2.5 0 0120 8.5v8a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 16.5v-10z"
+                />
+              </svg>
+              Meine Entwürfe
+              <span className="flex min-w-5 items-center justify-center rounded-md bg-brand/10 px-1.5 py-0.5 font-mono text-[10px] text-brand">
+                {drafts.length}
+              </span>
+            </button>
+          </div>
+
+          {showDrafts && (
+            <section
+              id="creator-drafts"
+              aria-labelledby="creator-drafts-title"
+              className="rounded-2xl bg-card p-5 ring-1 ring-ink/5"
+            >
+              <div className="mb-4 flex items-start justify-between gap-4">
+                <div>
+                  <h3 id="creator-drafts-title" className="text-sm font-semibold tracking-tight">
+                    Meine Entwürfe
+                  </h3>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Lokal in diesem Browser gespeichert · maximal 12 Entwürfe
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowDrafts(false)}
+                  aria-label="Entwürfe schließen"
+                  className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-ink/5 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="size-4"
+                  >
+                    <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </button>
+              </div>
+
+              {drafts.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-ink/15 px-5 py-8 text-center">
+                  <p className="text-sm font-semibold">Noch keine Entwürfe</p>
+                  <p className="mx-auto mt-1 max-w-[38ch] text-[11px] leading-relaxed text-muted-foreground">
+                    Gespeicherte Instagram-Creatives erscheinen hier und bleiben nach dem Neuladen
+                    erhalten.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {drafts.map((draft) => {
+                    const option = CAROUSEL_OPTIONS.find((item) => item.id === draft.mode);
+                    const savedAt = new Intl.DateTimeFormat("de-DE", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }).format(new Date(draft.savedAt));
+
+                    return (
+                      <article
+                        key={draft.id}
+                        className="flex items-center gap-3 rounded-xl bg-canvas/70 p-2.5 ring-1 ring-ink/5"
+                      >
+                        <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-ink/5">
+                          <CarouselArtwork mode={draft.mode} active={draft.active} compact />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs font-semibold">Lichterfest 2026</p>
+                          <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
+                            {option?.label} · {SLIDE_COUNT} Slides · {savedAt} Uhr
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <button
+                            onClick={() => openDraft(draft)}
+                            className="rounded-md px-2.5 py-1.5 text-[10px] font-semibold text-brand transition-colors hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                          >
+                            Öffnen
+                          </button>
+                          <button
+                            onClick={() => deleteDraft(draft.id)}
+                            aria-label={`Entwurf vom ${savedAt} löschen`}
+                            className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              className="size-3.5"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          )}
+
           <div>
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
@@ -1466,40 +1667,135 @@ function CreatorSection() {
 
           {/* Approval row */}
           <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-brand/5 border border-brand/10 flex items-center gap-3">
-              <div className="size-9 rounded-full bg-brand/15 flex items-center justify-center text-brand">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="size-4"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+            <div
+              aria-live="polite"
+              className={`flex items-center gap-3 rounded-xl border p-4 transition-colors duration-300 ${
+                publishStatus === "published"
+                  ? "border-success/20 bg-success/10"
+                  : "border-brand/10 bg-brand/5"
+              }`}
+            >
+              <div
+                className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-colors duration-300 ${
+                  publishStatus === "published" ? "bg-success text-white" : "bg-brand/15 text-brand"
+                }`}
+              >
+                {publishStatus === "publishing" || draftStatus === "saving" ? (
+                  <span className="size-4 animate-spin rounded-full border-2 border-brand/25 border-t-brand" />
+                ) : (
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    className="size-4"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
               </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold">Bereit zur Veröffentlichung</p>
+                <p className="text-sm font-semibold">
+                  {publishStatus === "published"
+                    ? "Erfolgreich veröffentlicht"
+                    : publishStatus === "publishing"
+                      ? "Post wird veröffentlicht"
+                      : draftStatus === "saved"
+                        ? "Entwurf gespeichert"
+                        : draftStatus === "saving"
+                          ? "Entwurf wird gespeichert"
+                          : "Bereit zur Veröffentlichung"}
+                </p>
                 <p className="text-[11px] text-muted-foreground">
-                  Markenrichtlinien geprüft · Alt-Texte vorhanden · IG-Format korrekt
+                  {publishStatus === "published"
+                    ? "Freigabe erteilt · Auf @stimmeonline gepostet · Gerade eben"
+                    : publishStatus === "publishing"
+                      ? "Freigabe wird verarbeitet und an Instagram übertragen"
+                      : draftStatus === "saved"
+                        ? "Im Creator gespeichert · Noch nicht veröffentlicht · Gerade eben"
+                        : draftStatus === "saving"
+                          ? "Creative und Caption werden als Entwurf gesichert"
+                          : "Markenrichtlinien geprüft · Alt-Texte vorhanden · IG-Format korrekt"}
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <button className="flex-1 bg-ink text-canvas py-3.5 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity">
-                Entwurf speichern
+              <button
+                onClick={() => setDraftStatus("saving")}
+                disabled={draftStatus !== "ready" || publishStatus !== "ready"}
+                className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold transition-all duration-300 disabled:cursor-default ${
+                  draftStatus === "saved"
+                    ? "bg-success text-white"
+                    : "bg-ink text-canvas hover:opacity-90 disabled:hover:opacity-100"
+                }`}
+              >
+                {draftStatus === "saving" ? (
+                  <>
+                    <span className="size-4 animate-spin rounded-full border-2 border-white/35 border-t-white" />
+                    Wird gespeichert…
+                  </>
+                ) : draftStatus === "saved" ? (
+                  <>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      className="size-4"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Entwurf gespeichert
+                  </>
+                ) : (
+                  "Entwurf speichern"
+                )}
               </button>
-              <button className="flex-[2] bg-brand text-brand-foreground py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-brand/25 hover:scale-[1.01] transition-transform">
-                Freigeben & auf Instagram posten
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="size-4"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 5l7 7-7 7" />
-                </svg>
+              <button
+                onClick={() => setPublishStatus("publishing")}
+                disabled={publishStatus !== "ready" || draftStatus === "saving"}
+                className={`flex flex-[2] items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold transition-all duration-300 disabled:cursor-default ${
+                  publishStatus === "published"
+                    ? "bg-success text-white shadow-lg shadow-success/20"
+                    : "bg-brand text-brand-foreground shadow-lg shadow-brand/25 hover:scale-[1.01] disabled:hover:scale-100"
+                }`}
+              >
+                {publishStatus === "publishing" ? (
+                  <>
+                    <span className="size-4 animate-spin rounded-full border-2 border-white/35 border-t-white" />
+                    Wird veröffentlicht…
+                  </>
+                ) : publishStatus === "published" ? (
+                  <>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      className="size-4"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Auf Instagram veröffentlicht
+                  </>
+                ) : (
+                  <>
+                    Freigeben & auf Instagram posten
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 12h14M13 5l7 7-7 7"
+                      />
+                    </svg>
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -1513,10 +1809,12 @@ function PhoneMock({
   mode,
   active,
   setActive,
+  published,
 }: {
   mode: CarouselMode;
   active: number;
   setActive: (i: number) => void;
+  published: boolean;
 }) {
   return (
     <div className="w-[340px] shrink-0">
@@ -1621,7 +1919,9 @@ function PhoneMock({
               #Heilbronn #Lichterfest #Neckarmeile #HNX
             </p>
             <p className="text-[11px] text-black/40">Alle 8 Kommentare ansehen</p>
-            <p className="text-[11px] text-black/40 pt-0.5">Vor 2 Stunden</p>
+            <p className="text-[11px] text-black/40 pt-0.5">
+              {published ? "Gerade eben · Veröffentlicht" : "Vorschau"}
+            </p>
           </div>
 
           {/* Bottom tab bar */}
