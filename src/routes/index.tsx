@@ -40,9 +40,21 @@ const TOPICS = [
     prev: [1800, 2100, 2400, 2600, 3100, 3600, 3400],
     audience: { genZ: 64, millennial: 30, other: 6 },
     sources: [
-      { label: "Reddit r/heilbronn", pct: 72 },
-      { label: "TikTok #hn", pct: 54 },
-      { label: "Instagram", pct: 41 },
+      {
+        label: "SWR Wohnmarkt-Bericht",
+        pct: 72,
+        url: "https://www.swr.de/swraktuell/mieten-wg-zimmer-werden-teurer-100.html",
+      },
+      {
+        label: "WG-Gesucht Mietangebote",
+        pct: 54,
+        url: "https://www.wg-gesucht.de/wg-zimmer-in-Heilbronn.60.0.1.3.html",
+      },
+      {
+        label: "Hochschule Heilbronn",
+        pct: 41,
+        url: "https://www.hs-heilbronn.de/de/finanzierung",
+      },
     ],
   },
   {
@@ -55,9 +67,17 @@ const TOPICS = [
     prev: [900, 1100, 1500, 1800, 2200, 3100, 2800],
     audience: { genZ: 48, millennial: 40, other: 12 },
     sources: [
-      { label: "Instagram", pct: 68 },
-      { label: "TikTok #hn", pct: 61 },
-      { label: "LinkedIn", pct: 47 },
+      { label: "IPAI Foundation", pct: 68, url: "https://ipai-foundation.ai/ki-festival/" },
+      {
+        label: "Stadt Heilbronn Kalender",
+        pct: 61,
+        url: "https://www.heilbronn.de/tourismus/veranstaltungskalender/detail/ki-festival.html",
+      },
+      {
+        label: "Fraunhofer IAF",
+        pct: 47,
+        url: "https://www.iaf.fraunhofer.de/en/events/ki-festival.html",
+      },
     ],
   },
   {
@@ -69,9 +89,21 @@ const TOPICS = [
     prev: [800, 700, 900, 1500, 3000, 4200, 1900],
     audience: { genZ: 70, millennial: 24, other: 6 },
     sources: [
-      { label: "Instagram", pct: 79 },
-      { label: "TikTok #hn", pct: 66 },
-      { label: "Reddit r/heilbronn", pct: 22 },
+      {
+        label: "Stadt Heilbronn Events",
+        pct: 79,
+        url: "https://www.heilbronn.de/tourismus/veranstaltungskalender.html",
+      },
+      {
+        label: "Heilbronn Marketing",
+        pct: 66,
+        url: "https://www.heilbronn.de/tourismus/infos/presse/heilbronner-lichterfest-infoportal.html",
+      },
+      {
+        label: "Veranstaltungskalender BW",
+        pct: 22,
+        url: "https://www.veranstaltung-baden-wuerttemberg.de/veranstaltung/heilbronner-lichterfest/",
+      },
     ],
   },
   {
@@ -83,9 +115,21 @@ const TOPICS = [
     prev: [2200, 2300, 2100, 2200, 2400, 1500, 1300],
     audience: { genZ: 42, millennial: 41, other: 17 },
     sources: [
-      { label: "Reddit r/heilbronn", pct: 58 },
-      { label: "Facebook-Gruppen", pct: 49 },
-      { label: "Instagram", pct: 33 },
+      {
+        label: "HNV Fahrgastinfos",
+        pct: 58,
+        url: "https://www.mein-hnv.de/abos-und-tickets/abonnements-monatskarten/semester-ticket/",
+      },
+      {
+        label: "Stadtwerke Heilbronn",
+        pct: 49,
+        url: "https://www.stadtwerke-heilbronn.de/swh/bus-und-bahn/abo-center.php",
+      },
+      {
+        label: "DHBW/HHN Mobilität",
+        pct: 33,
+        url: "https://www.heilbronn.dhbw.de/studium/rund-ums-studium/mobilitaet/",
+      },
     ],
   },
   {
@@ -97,9 +141,21 @@ const TOPICS = [
     prev: [1100, 1150, 1200, 1150, 1250, 1000, 1400],
     audience: { genZ: 66, millennial: 28, other: 6 },
     sources: [
-      { label: "TikTok #hn", pct: 64 },
-      { label: "Reddit r/heilbronn", pct: 51 },
-      { label: "Instagram", pct: 38 },
+      {
+        label: "KV Baden-Württemberg",
+        pct: 64,
+        url: "https://www.arztsuche-bw.de/",
+      },
+      {
+        label: "Psychotherapie Wartezeiten",
+        pct: 51,
+        url: "https://www.swr.de/swraktuell/baden-wuerttemberg/psychotherapie-wartezeiten-und-versorgung-100.html",
+      },
+      {
+        label: "AOK Terminvergabe",
+        pct: 38,
+        url: "https://www.aok.de/pp/gg/update/psychotherapien-termine-gkv/",
+      },
     ],
   },
   {
@@ -111,9 +167,13 @@ const TOPICS = [
     prev: [1000, 1050, 950, 1100, 1000, 600, 550],
     audience: { genZ: 38, millennial: 50, other: 12 },
     sources: [
-      { label: "LinkedIn", pct: 70 },
-      { label: "Reddit r/heilbronn", pct: 48 },
-      { label: "Instagram", pct: 31 },
+      { label: "IPAI Campus News", pct: 70, url: "https://ip.ai/en/" },
+      { label: "Campus Founders", pct: 48, url: "https://campusfounders.de/jobs/" },
+      {
+        label: "Agentur für Arbeit",
+        pct: 31,
+        url: "https://www.arbeitsagentur.de/vor-ort/heilbronn",
+      },
     ],
   },
 ];
@@ -461,12 +521,20 @@ function RadarSection() {
           <div>
             <p className="text-3xl font-semibold tracking-tight mt-2">{topic.sources[0].pct}%</p>
             <p className="text-sm text-canvas/70 mt-1">
-              über <span className="text-canvas font-semibold">{topic.sources[0].label}</span>
+              über{" "}
+              <a
+                href={topic.sources[0].url}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold text-canvas underline decoration-canvas/30 underline-offset-4 transition-colors hover:text-brand hover:decoration-brand"
+              >
+                {topic.sources[0].label}
+              </a>
             </p>
           </div>
           <div className="space-y-2 text-[11px]">
             {topic.sources.map((s) => (
-              <SourceBar key={s.label} label={s.label} pct={s.pct} />
+              <SourceBar key={s.label} label={s.label} pct={s.pct} url={s.url} />
             ))}
           </div>
         </div>
@@ -741,11 +809,18 @@ function Donut({ audience }: { audience: { genZ: number; millennial: number; oth
   );
 }
 
-function SourceBar({ label, pct }: { label: string; pct: number }) {
+function SourceBar({ label, pct, url }: { label: string; pct: number; url: string }) {
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-canvas/70">
-        <span>{label}</span>
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium underline decoration-canvas/20 underline-offset-4 transition-colors hover:text-canvas hover:decoration-brand"
+        >
+          {label}
+        </a>
         <span className="font-mono">{pct}%</span>
       </div>
       <div className="h-1 bg-canvas/10 rounded-full overflow-hidden">
@@ -773,15 +848,34 @@ Auch Nachhaltigkeit gehört zum Konzept: Rund 70 Prozent der teilnehmenden Betri
 // Cached analysis for the example above — the characteristics that matter for 20–35.
 const ANALYSIS = {
   title: "Lichterfest am Neckar",
-  score: 86,
+  score: 82,
   predicted: 8200, // AI-predicted reader reach for this draft
   bars: [
-    { label: "Youth Appeal", value: 90 },
-    { label: "Topic Match", value: 85 },
-    { label: "Tonalität", value: 68, muted: true },
-    { label: "Freshness", value: 96 },
+    {
+      label: "Zielgruppen-Relevanz",
+      value: 86,
+      basis: "Event passt zu 20-35",
+    },
+    {
+      label: "Lokaler Nutzwert",
+      value: 84,
+      basis: "Ort, Zeit, Eintritt klar",
+    },
+    {
+      label: "Text-Klarheit",
+      value: 72,
+      basis: "Top-Fakten früher nennen",
+      muted: true,
+    },
+    {
+      label: "Aktualität",
+      value: 78,
+      basis: "Starker Terminbezug",
+    },
   ],
-  tip: "Ziehe die Feuer-, Licht- und Pyroshows um 22.30 Uhr weiter nach oben und bündele Datum, Ort und freien Eintritt in einem Saveable. Diese konkreten Service-Infos erhöhen die Chance auf Saves und Shares bei 20–35.",
+  methodology:
+    "Bewertet nach Zielgruppen-Fit, Servicewert, Klarheit und Terminbezug. Keine Social-Media-Signale.",
+  tip: "Pyroshows um 22.30 Uhr sowie Datum, Ort und freien Eintritt weiter nach oben ziehen.",
 };
 
 function AnalyzerSection() {
@@ -843,7 +937,7 @@ function AnalyzerSection() {
         </div>
 
         <div className="col-span-12 lg:col-span-5">
-          <div className="bg-ink text-canvas rounded-2xl p-7 space-y-7 sticky top-24">
+          <div className="bg-ink text-canvas rounded-2xl p-7 space-y-5 sticky top-24">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-canvas/40">
                 Resonance Score
@@ -857,14 +951,15 @@ function AnalyzerSection() {
 
             <div className="flex flex-col items-center">
               <ScoreRing value={analysis.score} pending={!analyzed} />
-              <p className="mt-4 text-xs text-canvas/60">Gesamt-Relevanz für 20–35</p>
+              <p className="mt-3 text-xs text-canvas/60">Gesamt-Relevanz für 20–35</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {analysis.bars.map((b) => (
                 <ScoreBar
                   key={b.label}
                   label={b.label}
+                  basis={b.basis}
                   value={analyzed ? b.value : 0}
                   muted={!analyzed || b.value < 70}
                   pending={!analyzed}
@@ -873,12 +968,18 @@ function AnalyzerSection() {
             </div>
 
             {analyzed ? (
-              <div className="p-4 rounded-xl bg-canvas/5 border border-canvas/10 space-y-2">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-brand">KI-Tipp</p>
-                <p
-                  className="text-xs leading-relaxed text-canvas/80"
-                  dangerouslySetInnerHTML={{ __html: analysis.tip }}
-                />
+              <div className="grid gap-2 text-[11px] leading-snug">
+                <div className="rounded-xl bg-canvas/5 border border-canvas/10 p-3">
+                  <span className="text-brand font-bold uppercase tracking-wider">Basis: </span>
+                  <span className="text-canvas/70">{analysis.methodology}</span>
+                </div>
+                <div className="rounded-xl bg-brand/10 border border-brand/20 p-3">
+                  <span className="text-brand font-bold uppercase tracking-wider">Tipp: </span>
+                  <span
+                    className="text-canvas/80"
+                    dangerouslySetInnerHTML={{ __html: analysis.tip }}
+                  />
+                </div>
               </div>
             ) : (
               <div className="p-4 rounded-xl bg-canvas/5 border border-canvas/10 border-dashed">
@@ -1051,11 +1152,13 @@ function ScoreRing({ value, pending }: { value: number; pending?: boolean }) {
 
 function ScoreBar({
   label,
+  basis,
   value,
   muted,
   pending,
 }: {
   label: string;
+  basis: string;
   value: number;
   muted?: boolean;
   pending?: boolean;
@@ -1074,6 +1177,9 @@ function ScoreBar({
           style={{ width: `${value}%` }}
         />
       </div>
+      <p className="text-[10px] leading-snug text-canvas/45">
+        {pending ? "Analyse ausstehend" : basis}
+      </p>
     </div>
   );
 }
