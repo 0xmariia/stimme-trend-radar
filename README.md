@@ -8,7 +8,7 @@ The prototype is designed around Heilbronner Stimme and focuses on readers betwe
 
 Open the deployed prototype here:
 
-https://stimme-trend-radar-5nlxw8trt-mariia-andrusivs-projects.vercel.app
+https://stimme-trend-radar.vercel.app/
 
 ## Product Idea
 
