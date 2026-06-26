@@ -7,13 +7,13 @@ import lichterfestWalkingActs2026 from "@/assets/lichterfest-walking-acts-2026.j
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stimme Radar — Editorial Intelligence for Heilbronner Stimme" },
+      { title: "LokalPuls — Editorial Intelligence for Heilbronner Stimme" },
       {
         name: "description",
         content:
           "Discover what 20–35 year-olds in the Heilbronn region care about right now. Analyze articles, generate Instagram carousels, publish with confidence.",
       },
-      { property: "og:title", content: "Stimme Radar — Editorial Intelligence" },
+      { property: "og:title", content: "LokalPuls — Editorial Intelligence" },
       {
         property: "og:description",
         content:
@@ -337,11 +337,11 @@ function Nav({ step, onStep }: { step: number; onStep: (i: number) => void }) {
       <div className="max-w-6xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="size-8 bg-brand rounded-md flex items-center justify-center text-brand-foreground font-black text-lg">
-            S
+            LP
           </div>
           <div className="flex flex-col leading-tight">
             <span className="font-semibold tracking-tight text-[15px]">
-              Stimme {STEPS[step].label}
+              LokalPuls <span className="text-brand">•</span> {STEPS[step].label}
             </span>
             <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
               Heilbronner Stimme · Editorial
@@ -1452,6 +1452,7 @@ function CreatorSection() {
   const [showDrafts, setShowDrafts] = useState(false);
   const [draftStatus, setDraftStatus] = useState<"ready" | "saving" | "saved">("ready");
   const [publishStatus, setPublishStatus] = useState<"ready" | "publishing" | "published">("ready");
+  const [openedDraftId, setOpenedDraftId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -1498,6 +1499,7 @@ function CreatorSection() {
     setMode(nextMode);
     setActive(0);
     setDraftStatus("ready");
+    setOpenedDraftId(null);
   };
 
   const openDraft = (draft: CreatorDraft) => {
@@ -1505,6 +1507,14 @@ function CreatorSection() {
     setActive(draft.active);
     setDraftStatus("saved");
     setPublishStatus("ready");
+    setOpenedDraftId(draft.id);
+    setShowDrafts(false);
+
+    window.requestAnimationFrame(() => {
+      document
+        .getElementById("creator-preview")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
   };
 
   const deleteDraft = (draftId: string) => {
@@ -1525,7 +1535,10 @@ function CreatorSection() {
 
       <div className="grid grid-cols-12 gap-10 lg:gap-16 items-start">
         {/* Phone */}
-        <div className="col-span-12 lg:col-span-5 flex justify-center">
+        <div
+          id="creator-preview"
+          className="col-span-12 lg:col-span-5 flex scroll-mt-24 justify-center"
+        >
           <PhoneMock
             mode={mode}
             active={active}
@@ -1562,6 +1575,12 @@ function CreatorSection() {
               </span>
             </button>
           </div>
+
+          {openedDraftId && !showDrafts && (
+            <p className="-mt-5 text-right text-[11px] font-semibold text-brand" role="status">
+              Entwurf geöffnet und in der Vorschau geladen.
+            </p>
+          )}
 
           {showDrafts && (
             <section
@@ -1734,7 +1753,7 @@ function CreatorSection() {
               Festival-Crew.
             </p>
             <div className="flex flex-wrap gap-1.5 mt-4">
-              {["#Heilbronn", "#Lichterfest", "#Neckarmeile", "#HNX", "#StimmeRadar"].map((h) => (
+              {["#Heilbronn", "#Lichterfest", "#Neckarmeile", "#HNX", "#LokalPuls"].map((h) => (
                 <span
                   key={h}
                   className="text-[11px] px-2 py-1 rounded-md bg-brand/10 text-brand font-semibold"
@@ -2171,10 +2190,10 @@ function Footer({ step, onStep }: { step: number; onStep: (i: number) => void })
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div className="flex items-center gap-3">
           <div className="size-7 bg-brand rounded-md flex items-center justify-center text-brand-foreground font-black text-sm">
-            S
+            LP
           </div>
           <p className="text-xs text-muted-foreground">
-            © 2026 Heilbronner Stimme GmbH · Stimme Radar v2.4 · Editorial Prototype
+            © 2026 Heilbronner Stimme GmbH · LokalPuls v2.4 · Editorial Prototype
           </p>
         </div>
         <div className="flex gap-6 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">

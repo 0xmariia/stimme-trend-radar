@@ -1,6 +1,6 @@
-# Stimme Trend Radar
+# LokalPuls
 
-Stimme Trend Radar is a product concept for helping local newsrooms understand what younger audiences care about and turn those insights into formats they actually want to read, save, and share.
+LokalPuls is a product concept for helping local newsrooms understand what younger audiences care about and turn those insights into formats they actually want to read, save, and share.
 
 The prototype is designed around Heilbronner Stimme and focuses on readers between 20 and 35 years old in the Heilbronn region. It shows how an editorial team could move from trend discovery to article validation to content creation in one workflow.
 
@@ -12,7 +12,7 @@ https://stimme-trend-radar.vercel.app/
 
 ## Product Idea
 
-Local newsrooms often know what they want to cover, but it is harder to know which topics will feel relevant to younger readers before an article is published. Stimme Trend Radar acts like an editorial decision-support tool: it gives the team a clearer view of local signals, explains why a topic matters, and helps adapt the story into youth-friendly formats.
+Local newsrooms often know what they want to cover, but it is harder to know which topics will feel relevant to younger readers before an article is published. LokalPuls acts like an editorial decision-support tool: it gives the team a clearer view of local signals, explains why a topic matters, and helps adapt the story into youth-friendly formats.
 
 The goal is not to replace editorial judgment. The goal is to make editorial decisions easier to explain, faster to test, and more connected to audience needs.
 
@@ -51,7 +51,7 @@ In the current demo, the story is about the Heilbronner Lichterfest and the gene
 
 Younger audiences often do not enter local journalism through the homepage first. They discover stories through mobile feeds, social formats, recommendations, and quick visual summaries. For a local publisher, this means the story itself is only one part of the product. The packaging, timing, format, and usefulness also matter.
 
-Stimme Trend Radar demonstrates how a newsroom could:
+LokalPuls demonstrates how a newsroom could:
 
 - Identify promising local stories earlier
 - Explain why a topic is relevant to younger readers
